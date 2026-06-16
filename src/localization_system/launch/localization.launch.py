@@ -43,7 +43,10 @@ def generate_launch_description():
             'port': LaunchConfiguration('gps_port'),
             'baud': 115200,
             'frame_id': 'gps_link'
-        }]
+        }],
+        remappings=[
+            ('/gps/fix', '/gps/fix_raw')
+        ]
     )
     
     sim_gps_node = ExecuteProcess(
@@ -52,12 +55,18 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration('use_sim_gps'))
     )
     
+    gps_averager_node = ExecuteProcess(
+        cmd=['python3', '/home/tractor/gps_averager.py'],
+        output='screen'
+    )
+    
     ekf_node = Node(
         package='robot_localization',
         executable='ekf_node',
         name='ekf_filter_node',
         output='screen',
-        parameters=[ekf_config_path]
+        parameters=[ekf_config_path],
+        arguments=['--ros-args', '--log-level', 'rclcpp:=ERROR']
     )
     
     navsat_transform_node = Node(
@@ -81,7 +90,7 @@ def generate_launch_description():
         }],
         remappings=[
             ('/gps/fix', '/gps/fix'),
-            ('/imu/data', '/imu/data'),
+            ('imu', '/imu/data'),
             ('/odometry/filtered', '/odometry/filtered'),
             ('/odometry/gps', '/odometry/gps')
         ]
@@ -108,6 +117,7 @@ def generate_launch_description():
         imu_node,
         gps_node,
         sim_gps_node,
+        gps_averager_node,
         ekf_node,
         navsat_transform_node,
         tf_base_to_imu,
