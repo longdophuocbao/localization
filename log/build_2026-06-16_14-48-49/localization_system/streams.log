@@ -1,0 +1,76 @@
+[0.033s] Invoking command in '/home/tractor/ros2_ws/build/localization_system': CMAKE_PREFIX_PATH=/opt/ros/kilted /usr/bin/cmake /home/tractor/ros2_ws/src/localization_system -DCMAKE_INSTALL_PREFIX=/home/tractor/ros2_ws/install/localization_system
+[0.281s] -- The C compiler identification is GNU 13.3.0
+[0.462s] -- The CXX compiler identification is GNU 13.3.0
+[0.498s] -- Detecting C compiler ABI info
+[0.770s] -- Detecting C compiler ABI info - done
+[0.786s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.786s] -- Detecting C compile features
+[0.787s] -- Detecting C compile features - done
+[0.823s] -- Detecting CXX compiler ABI info
+[1.109s] -- Detecting CXX compiler ABI info - done
+[1.141s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[1.142s] -- Detecting CXX compile features
+[1.147s] -- Detecting CXX compile features - done
+[1.157s] -- Found ament_cmake: 2.7.5 (/opt/ros/kilted/share/ament_cmake/cmake)
+[1.505s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[1.809s] -- Found rclcpp: 29.5.7 (/opt/ros/kilted/share/rclcpp/cmake)
+[1.878s] -- Found rosidl_generator_c: 4.9.6 (/opt/ros/kilted/share/rosidl_generator_c/cmake)
+[1.894s] -- Found rosidl_generator_cpp: 4.9.6 (/opt/ros/kilted/share/rosidl_generator_cpp/cmake)
+[1.917s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[1.971s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[2.112s] -- Found rmw_implementation_cmake: 7.8.2 (/opt/ros/kilted/share/rmw_implementation_cmake/cmake)
+[2.115s] -- Found rmw_fastrtps_cpp: 9.3.3 (/opt/ros/kilted/share/rmw_fastrtps_cpp/cmake)
+[2.312s] -- Found OpenSSL: /usr/lib/aarch64-linux-gnu/libcrypto.so (found version "3.0.13")  
+[2.340s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[2.476s] -- Found sensor_msgs: 5.5.2 (/opt/ros/kilted/share/sensor_msgs/cmake)
+[2.577s] -- Found nav_msgs: 5.5.2 (/opt/ros/kilted/share/nav_msgs/cmake)
+[2.637s] -- Found robot_localization: 3.9.4 (/opt/ros/kilted/share/robot_localization/cmake)
+[3.135s] -- Found eigen3_cmake_module: 0.4.0 (/opt/ros/kilted/share/eigen3_cmake_module/cmake)
+[3.140s] -- Found Eigen3: TRUE (found version "3.4.0") 
+[3.140s] -- Ensuring Eigen3 include directory is part of orocos-kdl CMake target
+[3.175s] CMake Deprecation Warning at /opt/ros/kilted/share/ament_cmake_target_dependencies/cmake/ament_target_dependencies.cmake:87 (message):
+[3.175s]   ament_target_dependencies() is deprecated.  Use target_link_libraries()
+[3.176s]   with modern CMake targets instead.  Try replacing this call with:
+[3.176s] 
+[3.176s]     target_link_libraries(imu_driver PUBLIC
+[3.176s]       ${sensor_msgs_TARGETS}
+[3.176s]       rclcpp::rclcpp
+[3.177s]       sensor_msgs::sensor_msgs_library
+[3.177s]     )
+[3.185s] 
+[3.185s] Call Stack (most recent call first):
+[3.185s]   CMakeLists.txt:21 (ament_target_dependencies)
+[3.185s] 
+[3.185s] 
+[3.186s] CMake Deprecation Warning at /opt/ros/kilted/share/ament_cmake_target_dependencies/cmake/ament_target_dependencies.cmake:87 (message):
+[3.187s]   ament_target_dependencies() is deprecated.  Use target_link_libraries()
+[3.187s]   with modern CMake targets instead.  Try replacing this call with:
+[3.188s] 
+[3.188s]     target_link_libraries(gps_driver PUBLIC
+[3.188s]       ${sensor_msgs_TARGETS}
+[3.188s]       rclcpp::rclcpp
+[3.188s]       sensor_msgs::sensor_msgs_library
+[3.188s]     )
+[3.188s] 
+[3.188s] Call Stack (most recent call first):
+[3.188s]   CMakeLists.txt:25 (ament_target_dependencies)
+[3.188s] 
+[3.189s] 
+[3.421s] -- Configuring done (3.3s)
+[3.492s] -- Generating done (0.0s)
+[3.501s] -- Build files have been written to: /home/tractor/ros2_ws/build/localization_system
+[3.525s] Invoked command in '/home/tractor/ros2_ws/build/localization_system' returned '0': CMAKE_PREFIX_PATH=/opt/ros/kilted /usr/bin/cmake /home/tractor/ros2_ws/src/localization_system -DCMAKE_INSTALL_PREFIX=/home/tractor/ros2_ws/install/localization_system
+[3.532s] Invoking command in '/home/tractor/ros2_ws/build/localization_system': CMAKE_PREFIX_PATH=/opt/ros/kilted /usr/bin/cmake --build /home/tractor/ros2_ws/build/localization_system -- -j4 -l4
+[3.701s] [ 25%] [32mBuilding CXX object CMakeFiles/imu_driver.dir/src/imu_driver.cpp.o[0m
+[3.716s] [ 50%] [32mBuilding CXX object CMakeFiles/gps_driver.dir/src/gps_driver.cpp.o[0m
+[12.250s] /home/tractor/ros2_ws/src/localization_system/src/gps_driver.cpp: In member function ‘void GpsDriverNode::serial_loop()’:
+[12.255s] /home/tractor/ros2_ws/src/localization_system/src/gps_driver.cpp:201:94: error: ‘COVARIANCE_TYPE_DIAGONAL’ is not a member of ‘sensor_msgs::msg::NavSatFix’ {aka ‘sensor_msgs::msg::NavSatFix_<std::allocator<void> >’}
+[12.256s]   201 |                             fix_msg_.position_covariance_type = sensor_msgs::msg::NavSatFix::COVARIANCE_TYPE_DIAGONAL;
+[12.256s]       |                                                                                              ^~~~~~~~~~~~~~~~~~~~~~~~
+[16.855s] gmake[2]: *** [CMakeFiles/gps_driver.dir/build.make:76: CMakeFiles/gps_driver.dir/src/gps_driver.cpp.o] Error 1
+[16.857s] gmake[1]: *** [CMakeFiles/Makefile2:165: CMakeFiles/gps_driver.dir/all] Error 2
+[16.857s] gmake[1]: *** Waiting for unfinished jobs....
+[23.627s] [ 75%] [32m[1mLinking CXX executable imu_driver[0m
+[24.154s] [ 75%] Built target imu_driver
+[24.157s] gmake: *** [Makefile:146: all] Error 2
+[24.164s] Invoked command in '/home/tractor/ros2_ws/build/localization_system' returned '2': CMAKE_PREFIX_PATH=/opt/ros/kilted /usr/bin/cmake --build /home/tractor/ros2_ws/build/localization_system -- -j4 -l4

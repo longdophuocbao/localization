@@ -1,0 +1,68 @@
+[0.000000] (-) TimerEvent: {}
+[0.000921] (localization_system) JobQueued: {'identifier': 'localization_system', 'dependencies': OrderedDict()}
+[0.001023] (localization_system) JobStarted: {'identifier': 'localization_system'}
+[0.099636] (-) TimerEvent: {}
+[0.200213] (-) TimerEvent: {}
+[0.300968] (-) TimerEvent: {}
+[0.401383] (-) TimerEvent: {}
+[0.501999] (-) TimerEvent: {}
+[0.602476] (-) TimerEvent: {}
+[0.702860] (-) TimerEvent: {}
+[0.803172] (-) TimerEvent: {}
+[0.903468] (-) TimerEvent: {}
+[1.003752] (-) TimerEvent: {}
+[1.104044] (-) TimerEvent: {}
+[1.204338] (-) TimerEvent: {}
+[1.306242] (-) TimerEvent: {}
+[1.408826] (-) TimerEvent: {}
+[1.509151] (-) TimerEvent: {}
+[1.609444] (-) TimerEvent: {}
+[1.709752] (-) TimerEvent: {}
+[1.810031] (-) TimerEvent: {}
+[1.911823] (-) TimerEvent: {}
+[2.012195] (-) TimerEvent: {}
+[2.015645] (localization_system) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../../build/localization_system', 'build', '--build-base', '/home/tractor/ros2_ws/build/localization_system/build', 'install', '--record', '/home/tractor/ros2_ws/build/localization_system/install.log', '--single-version-externally-managed', 'install_data'], 'cwd': '/home/tractor/ros2_ws/src/localization_system', 'env': {'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'tractor', 'ANTIGRAVITY_SOURCE_METADATA': '{"tool":{"conversationId":"da145dd4-72bd-4205-86e4-9a05a980c488","stepIndex":270,"toolCall":{"id":"mpnx1e41","name":"run_command","argumentsJson":"{\\"CommandLine\\":\\"source /opt/ros/kilted/setup.bash \\\\u0026\\\\u0026 colcon build\\",\\"Cwd\\":\\"/home/tractor/ros2_ws\\",\\"WaitMsBeforeAsync\\":10000,\\"toolAction\\":\\"Building ROS 2 workspace\\",\\"toolSummary\\":\\"Run colcon build\\"}","thinkingSignature":"EpgECpUEAQw51seADV4mXhh65ObGyuYoxne071odmqj4umS6Xk3ZgAMx1cs4Ccq4xYZW3XhsTyex8ezztd9Loxybz7OIR6+Q6KcVo900zd1krNfvsnfVGtM2bd23YKNx4IFmBgTShIOpEU4WbjLJcK7rS+fLv3ZLly3zZwYUZhWayafZ0sj8qw8LbJwseFDVFpKME9ZiiqZ0sfaYPdRmL0QQ9nIBqn4fW4K0bq8OtW/TOjRGe5yI48yxql/prK/4JbOMdi0ZwL834bgjWxazQOTX1B9Btkv1M2s8dKIOZKNitXwye8v+xYaE1ONCf9zge/0UHtZxLLPi0lMWIq8yiRygSPfJiiV5WKuUJwcSI43jdDc4GGRnMpZqQ0EnLrI02oZ63tEo6uZSZKy/hv9duDcyAD7fkFufnpJ/tYoXc1BfraU91f4tHAstxD78sLBVZ65eERxWmRSk7xzBDRosddCPSPxHBZY3T5hNuQ/CyBDCZnqS7BTaixAswSbkBXwMRFOFe53/9EDAR12Tll4icjaJxTKHiIFtfRGg7BzqcOet7Y4P7juE18iGbvUBDSJwHV+Rkvf86QcLGMZ9azFrSUoEvieh6qoLoci5ixbnTojjLrwEdQPUhXF2QPy57KbQvLCaZlB6pok5Z4UlPZfvIAEgBQ/EIQv+x9KSbcyVZocJMw5H5xd3mP/uhvkbTSaJrQWYH8bBgqTzIwQ=","originalName":"run_command"}}}', 'SSH_CLIENT': '192.168.50.147 44238 22', 'LC_TIME': 'C.UTF-8', 'XDG_SESSION_TYPE': 'tty', 'GIT_ASKPASS': '/home/tractor/.vscode-server/cli/servers/Stable-8b640eef5a6c6089c029249d48efa5c99adf7d51/server/extensions/git/dist/askpass.sh', 'SHLVL': '2', 'LD_LIBRARY_PATH': '/opt/ros/kilted/lib/aarch64-linux-gnu:/opt/ros/kilted/lib', 'BROWSER': '/home/tractor/.vscode-server/cli/servers/Stable-8b640eef5a6c6089c029249d48efa5c99adf7d51/server/bin/helpers/browser.sh', 'HOME': '/home/tractor', 'OLDPWD': '/home/tractor/.vscode-server', 'TERM_PROGRAM_VERSION': '1.119.0', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-2daa694c-c1b3-48ee-a36d-6fe71e78fcc0.sock', 'ROS_PYTHON_VERSION': '3', 'PAGER': 'cat', 'VSCODE_GIT_ASKPASS_MAIN': '/home/tractor/.vscode-server/cli/servers/Stable-8b640eef5a6c6089c029249d48efa5c99adf7d51/server/extensions/git/dist/askpass-main.js', 'LC_MONETARY': 'C.UTF-8', 'VSCODE_GIT_ASKPASS_NODE': '/home/tractor/.vscode-server/cli/servers/Stable-8b640eef5a6c6089c029249d48efa5c99adf7d51/server/node', 'VSCODE_PYTHON_AUTOACTIVATE_GUARD': '1', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'ANTIGRAVITY_AGENT': '1', 'ROS_DISTRO': 'kilted', 'LOGNAME': 'tractor', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'XDG_SESSION_CLASS': 'user', 'TERM': 'dumb', 'XDG_SESSION_ID': '4', 'PATH': '/opt/ros/kilted/bin:/home/tractor/.gemini/antigravity-cli/bin:/home/tractor/.local/bin:/home/tractor/.local/bin:/home/tractor/.vscode-server/cli/servers/Stable-8b640eef5a6c6089c029249d48efa5c99adf7d51/server/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin', 'LC_ADDRESS': 'C.UTF-8', 'XDG_RUNTIME_DIR': '/run/user/1000', 'LANG': 'C.UTF-8', 'ANTIGRAVITY_CONVERSATION_ID': 'da145dd4-72bd-4205-86e4-9a05a980c488', 'LC_TELEPHONE': 'C.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-4c9783a06a.sock', 'TERM_PROGRAM': 'vscode', 'AMENT_PREFIX_PATH': '/opt/ros/kilted', 'ANTIGRAVITY_PROJECT_ID': '07a1ea1d-4f1a-4564-af7c-46960726ac8a', 'SHELL': '/bin/bash', 'ANTIGRAVITY_LS_ADDRESS': 'localhost:38599', 'LC_NAME': 'C.UTF-8', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'LC_MEASUREMENT': 'C.UTF-8', 'LC_IDENTIFICATION': 'C.UTF-8', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'GIT_PAGER': 'cat', 'ANTIGRAVITY_TRAJECTORY_ID': '410a89ea-90fc-4d91-b2cd-c7cbd36c72ab', 'PWD': '/home/tractor/ros2_ws/build/localization_system', 'LC_ALL': 'C.UTF-8', 'SSH_CONNECTION': '192.168.50.147 44238 192.168.50.118 22', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/tractor/ros2_ws/build/localization_system/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/tractor/ros2_ws/install/localization_system/lib/python3.12/site-packages:/opt/ros/kilted/lib/python3.12/site-packages', 'LC_NUMERIC': 'C.UTF-8', 'LC_PAPER': 'C.UTF-8', 'COLCON': '1', 'ANTIGRAVITY_CSRF_TOKEN': ''}, 'shell': False}
+[2.114214] (-) TimerEvent: {}
+[2.214546] (-) TimerEvent: {}
+[2.315035] (-) TimerEvent: {}
+[2.415747] (-) TimerEvent: {}
+[2.516073] (-) TimerEvent: {}
+[2.616393] (-) TimerEvent: {}
+[2.708144] (localization_system) StdoutLine: {'line': b'running egg_info\n'}
+[2.708628] (localization_system) StdoutLine: {'line': b'creating ../../build/localization_system/localization_system.egg-info\n'}
+[2.716471] (-) TimerEvent: {}
+[2.740915] (localization_system) StdoutLine: {'line': b'writing ../../build/localization_system/localization_system.egg-info/PKG-INFO\n'}
+[2.741879] (localization_system) StdoutLine: {'line': b'writing dependency_links to ../../build/localization_system/localization_system.egg-info/dependency_links.txt\n'}
+[2.742351] (localization_system) StdoutLine: {'line': b'writing entry points to ../../build/localization_system/localization_system.egg-info/entry_points.txt\n'}
+[2.742933] (localization_system) StdoutLine: {'line': b'writing requirements to ../../build/localization_system/localization_system.egg-info/requires.txt\n'}
+[2.743212] (localization_system) StdoutLine: {'line': b'writing top-level names to ../../build/localization_system/localization_system.egg-info/top_level.txt\n'}
+[2.743827] (localization_system) StdoutLine: {'line': b"writing manifest file '../../build/localization_system/localization_system.egg-info/SOURCES.txt'\n"}
+[2.812662] (localization_system) StdoutLine: {'line': b"reading manifest file '../../build/localization_system/localization_system.egg-info/SOURCES.txt'\n"}
+[2.815368] (localization_system) StdoutLine: {'line': b"writing manifest file '../../build/localization_system/localization_system.egg-info/SOURCES.txt'\n"}
+[2.815979] (localization_system) StdoutLine: {'line': b'running build\n'}
+[2.816222] (localization_system) StdoutLine: {'line': b'running install\n'}
+[2.816592] (-) TimerEvent: {}
+[2.829330] (localization_system) StdoutLine: {'line': b'running install_data\n'}
+[2.830300] (localization_system) StdoutLine: {'line': b'creating /home/tractor/ros2_ws/install/localization_system/share/ament_index\n'}
+[2.830635] (localization_system) StdoutLine: {'line': b'creating /home/tractor/ros2_ws/install/localization_system/share/ament_index/resource_index\n'}
+[2.831015] (localization_system) StdoutLine: {'line': b'creating /home/tractor/ros2_ws/install/localization_system/share/ament_index/resource_index/packages\n'}
+[2.831211] (localization_system) StdoutLine: {'line': b'copying resource/localization_system -> /home/tractor/ros2_ws/install/localization_system/share/ament_index/resource_index/packages\n'}
+[2.831858] (localization_system) StdoutLine: {'line': b'copying package.xml -> /home/tractor/ros2_ws/install/localization_system/share/localization_system\n'}
+[2.832313] (localization_system) StdoutLine: {'line': b'creating /home/tractor/ros2_ws/install/localization_system/share/localization_system/launch\n'}
+[2.832951] (localization_system) StdoutLine: {'line': b'copying launch/localization.launch.py -> /home/tractor/ros2_ws/install/localization_system/share/localization_system/launch\n'}
+[2.833119] (localization_system) StdoutLine: {'line': b'creating /home/tractor/ros2_ws/install/localization_system/share/localization_system/config\n'}
+[2.833307] (localization_system) StdoutLine: {'line': b'copying config/ekf.yaml -> /home/tractor/ros2_ws/install/localization_system/share/localization_system/config\n'}
+[2.833769] (localization_system) StdoutLine: {'line': b'running install_egg_info\n'}
+[2.892166] (localization_system) StdoutLine: {'line': b'Copying ../../build/localization_system/localization_system.egg-info to /home/tractor/ros2_ws/install/localization_system/lib/python3.12/site-packages/localization_system-0.0.0-py3.12.egg-info\n'}
+[2.893323] (localization_system) StdoutLine: {'line': b'running install_scripts\n'}
+[2.916785] (-) TimerEvent: {}
+[3.017674] (-) TimerEvent: {}
+[3.118521] (-) TimerEvent: {}
+[3.205289] (localization_system) StdoutLine: {'line': b'Installing gps_driver script to /home/tractor/ros2_ws/install/localization_system/bin\n'}
+[3.205630] (localization_system) StdoutLine: {'line': b'Installing imu_driver script to /home/tractor/ros2_ws/install/localization_system/bin\n'}
+[3.205812] (localization_system) StdoutLine: {'line': b"writing list of installed files to '/home/tractor/ros2_ws/build/localization_system/install.log'\n"}
+[3.218777] (-) TimerEvent: {}
+[3.319717] (-) TimerEvent: {}
+[3.351361] (localization_system) CommandEnded: {'returncode': 0}
+[3.402280] (localization_system) JobEnded: {'identifier': 'localization_system', 'rc': 0}
+[3.405029] (-) EventReactorShutdown: {}

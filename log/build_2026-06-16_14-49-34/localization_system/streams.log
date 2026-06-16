@@ -1,0 +1,35 @@
+[0.027s] Invoking command in '/home/tractor/ros2_ws/build/localization_system': CMAKE_PREFIX_PATH=/opt/ros/kilted /usr/bin/cmake --build /home/tractor/ros2_ws/build/localization_system -- -j4 -l4
+[0.121s] -- Found ament_cmake: 2.7.5 (/opt/ros/kilted/share/ament_cmake/cmake)
+[0.679s] -- Found rclcpp: 29.5.7 (/opt/ros/kilted/share/rclcpp/cmake)
+[0.748s] -- Found rosidl_generator_c: 4.9.6 (/opt/ros/kilted/share/rosidl_generator_c/cmake)
+[0.773s] -- Found rosidl_generator_cpp: 4.9.6 (/opt/ros/kilted/share/rosidl_generator_cpp/cmake)
+[0.792s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.815s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.926s] -- Found rmw_implementation_cmake: 7.8.2 (/opt/ros/kilted/share/rmw_implementation_cmake/cmake)
+[0.929s] -- Found rmw_fastrtps_cpp: 9.3.3 (/opt/ros/kilted/share/rmw_fastrtps_cpp/cmake)
+[1.004s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[1.109s] -- Found sensor_msgs: 5.5.2 (/opt/ros/kilted/share/sensor_msgs/cmake)
+[1.191s] -- Found nav_msgs: 5.5.2 (/opt/ros/kilted/share/nav_msgs/cmake)
+[1.225s] -- Found robot_localization: 3.9.4 (/opt/ros/kilted/share/robot_localization/cmake)
+[1.641s] -- Found eigen3_cmake_module: 0.4.0 (/opt/ros/kilted/share/eigen3_cmake_module/cmake)
+[1.647s] -- Ensuring Eigen3 include directory is part of orocos-kdl CMake target
+[1.926s] -- Configuring done (1.8s)
+[2.024s] -- Generating done (0.1s)
+[2.067s] -- Build files have been written to: /home/tractor/ros2_ws/build/localization_system
+[2.169s] [ 25%] [32mBuilding CXX object CMakeFiles/imu_driver.dir/src/imu_driver.cpp.o[0m
+[2.177s] [ 50%] [32mBuilding CXX object CMakeFiles/gps_driver.dir/src/gps_driver.cpp.o[0m
+[22.994s] [ 75%] [32m[1mLinking CXX executable gps_driver[0m
+[23.275s] [100%] [32m[1mLinking CXX executable imu_driver[0m
+[23.523s] /usr/bin/ld: CMakeFiles/gps_driver.dir/src/gps_driver.cpp.o: in function `std::_Function_handler<std::shared_ptr<rclcpp::PublisherBase> (rclcpp::node_interfaces::NodeBaseInterface*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rclcpp::QoS const&), rclcpp::create_publisher_factory<sensor_msgs::msg::NavSatFix_<std::allocator<void> >, std::allocator<void>, rclcpp::Publisher<sensor_msgs::msg::NavSatFix_<std::allocator<void> >, std::allocator<void> > >(rclcpp::PublisherOptionsWithAllocator<std::allocator<void> > const&)::{lambda(rclcpp::node_interfaces::NodeBaseInterface*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rclcpp::QoS const&)#1}>::_M_invoke(std::_Any_data const&, rclcpp::node_interfaces::NodeBaseInterface*&&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rclcpp::QoS const&)':
+[23.523s] gps_driver.cpp:(.text._ZNSt17_Function_handlerIFSt10shared_ptrIN6rclcpp13PublisherBaseEEPNS1_15node_interfaces17NodeBaseInterfaceERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKNS1_3QoSEEZNS1_24create_publisher_factoryIN11sensor_msgs3msg10NavSatFix_ISaIvEEESN_NS1_9PublisherISO_SN_EEEENS1_16PublisherFactoryERKNS1_29PublisherOptionsWithAllocatorIT0_EEEUlS6_SE_SH_E_E9_M_invokeERKSt9_Any_dataOS6_SE_SH_[_ZNSt17_Function_handlerIFSt10shared_ptrIN6rclcpp13PublisherBaseEEPNS1_15node_interfaces17NodeBaseInterfaceERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKNS1_3QoSEEZNS1_24create_publisher_factoryIN11sensor_msgs3msg10NavSatFix_ISaIvEEESN_NS1_9PublisherISO_SN_EEEENS1_16PublisherFactoryERKNS1_29PublisherOptionsWithAllocatorIT0_EEEUlS6_SE_SH_E_E9_M_invokeERKSt9_Any_dataOS6_SE_SH_]+0x74): undefined reference to `rosidl_message_type_support_t const* rosidl_typesupport_cpp::get_message_type_support_handle<sensor_msgs::msg::NavSatFix_<std::allocator<void> > >()'
+[23.559s] collect2: error: ld returned 1 exit status
+[23.570s] gmake[2]: *** [CMakeFiles/gps_driver.dir/build.make:163: gps_driver] Error 1
+[23.571s] gmake[1]: *** [CMakeFiles/Makefile2:165: CMakeFiles/gps_driver.dir/all] Error 2
+[23.572s] gmake[1]: *** Waiting for unfinished jobs....
+[23.793s] /usr/bin/ld: CMakeFiles/imu_driver.dir/src/imu_driver.cpp.o: in function `std::_Function_handler<std::shared_ptr<rclcpp::PublisherBase> (rclcpp::node_interfaces::NodeBaseInterface*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rclcpp::QoS const&), rclcpp::create_publisher_factory<sensor_msgs::msg::Imu_<std::allocator<void> >, std::allocator<void>, rclcpp::Publisher<sensor_msgs::msg::Imu_<std::allocator<void> >, std::allocator<void> > >(rclcpp::PublisherOptionsWithAllocator<std::allocator<void> > const&)::{lambda(rclcpp::node_interfaces::NodeBaseInterface*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rclcpp::QoS const&)#1}>::_M_invoke(std::_Any_data const&, rclcpp::node_interfaces::NodeBaseInterface*&&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, rclcpp::QoS const&)':
+[23.793s] imu_driver.cpp:(.text._ZNSt17_Function_handlerIFSt10shared_ptrIN6rclcpp13PublisherBaseEEPNS1_15node_interfaces17NodeBaseInterfaceERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKNS1_3QoSEEZNS1_24create_publisher_factoryIN11sensor_msgs3msg4Imu_ISaIvEEESN_NS1_9PublisherISO_SN_EEEENS1_16PublisherFactoryERKNS1_29PublisherOptionsWithAllocatorIT0_EEEUlS6_SE_SH_E_E9_M_invokeERKSt9_Any_dataOS6_SE_SH_[_ZNSt17_Function_handlerIFSt10shared_ptrIN6rclcpp13PublisherBaseEEPNS1_15node_interfaces17NodeBaseInterfaceERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKNS1_3QoSEEZNS1_24create_publisher_factoryIN11sensor_msgs3msg4Imu_ISaIvEEESN_NS1_9PublisherISO_SN_EEEENS1_16PublisherFactoryERKNS1_29PublisherOptionsWithAllocatorIT0_EEEUlS6_SE_SH_E_E9_M_invokeERKSt9_Any_dataOS6_SE_SH_]+0x74): undefined reference to `rosidl_message_type_support_t const* rosidl_typesupport_cpp::get_message_type_support_handle<sensor_msgs::msg::Imu_<std::allocator<void> > >()'
+[23.807s] collect2: error: ld returned 1 exit status
+[23.810s] gmake[2]: *** [CMakeFiles/imu_driver.dir/build.make:163: imu_driver] Error 1
+[23.810s] gmake[1]: *** [CMakeFiles/Makefile2:139: CMakeFiles/imu_driver.dir/all] Error 2
+[23.810s] gmake: *** [Makefile:146: all] Error 2
+[23.814s] Invoked command in '/home/tractor/ros2_ws/build/localization_system' returned '2': CMAKE_PREFIX_PATH=/opt/ros/kilted /usr/bin/cmake --build /home/tractor/ros2_ws/build/localization_system -- -j4 -l4

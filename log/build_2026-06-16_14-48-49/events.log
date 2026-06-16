@@ -1,0 +1,321 @@
+[0.000000] (-) TimerEvent: {}
+[0.000427] (localization_system) JobQueued: {'identifier': 'localization_system', 'dependencies': OrderedDict()}
+[0.000938] (localization_system) JobStarted: {'identifier': 'localization_system'}
+[0.023211] (localization_system) JobProgress: {'identifier': 'localization_system', 'progress': 'cmake'}
+[0.025386] (localization_system) Command: {'cmd': ['/usr/bin/cmake', '/home/tractor/ros2_ws/src/localization_system', '-DCMAKE_INSTALL_PREFIX=/home/tractor/ros2_ws/install/localization_system'], 'cwd': '/home/tractor/ros2_ws/build/localization_system', 'env': OrderedDict({'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'tractor', 'ANTIGRAVITY_SOURCE_METADATA': '{"tool":{"conversationId":"3bd2b496-90a3-489b-94df-e59c4008bb1d","stepIndex":36,"toolCall":{"id":"q0aprdn9","name":"run_command","argumentsJson":"{\\"CommandLine\\":\\"colcon build --packages-select localization_system\\",\\"Cwd\\":\\"/home/tractor/ros2_ws\\",\\"WaitMsBeforeAsync\\":5000,\\"toolAction\\":\\"Building workspace\\",\\"toolSummary\\":\\"Run colcon build\\"}","thinkingSignature":"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","originalName":"run_command"}}}', 'SSH_CLIENT': '192.168.50.147 44238 22', 'LC_TIME': 'C.UTF-8', 'XDG_SESSION_TYPE': 'tty', 'GIT_ASKPASS': '/home/tractor/.vscode-server/cli/servers/Stable-8b640eef5a6c6089c029249d48efa5c99adf7d51/server/extensions/git/dist/askpass.sh', 'SHLVL': '2', 'LD_LIBRARY_PATH': '/opt/ros/kilted/lib/aarch64-linux-gnu:/opt/ros/kilted/lib', 'BROWSER': '/home/tractor/.vscode-server/cli/servers/Stable-8b640eef5a6c6089c029249d48efa5c99adf7d51/server/bin/helpers/browser.sh', 'HOME': '/home/tractor', 'OLDPWD': '/home/tractor', 'TERM_PROGRAM_VERSION': '1.119.0', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-c120f2e8-0e18-4b4d-8ff3-13a39336f535.sock', 'ROS_PYTHON_VERSION': '3', 'PAGER': 'cat', 'VSCODE_GIT_ASKPASS_MAIN': '/home/tractor/.vscode-server/cli/servers/Stable-8b640eef5a6c6089c029249d48efa5c99adf7d51/server/extensions/git/dist/askpass-main.js', 'LC_MONETARY': 'C.UTF-8', 'VSCODE_GIT_ASKPASS_NODE': '/home/tractor/.vscode-server/cli/servers/Stable-8b640eef5a6c6089c029249d48efa5c99adf7d51/server/node', 'VSCODE_PYTHON_AUTOACTIVATE_GUARD': '1', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'ANTIGRAVITY_AGENT': '1', 'ROS_DISTRO': 'kilted', 'LOGNAME': 'tractor', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'XDG_SESSION_CLASS': 'user', 'TERM': 'dumb', 'XDG_SESSION_ID': '4', 'PATH': '/home/tractor/.gemini/antigravity-cli/bin:/opt/ros/kilted/bin:/home/tractor/.local/bin:/home/tractor/.local/bin:/home/tractor/.vscode-server/cli/servers/Stable-8b640eef5a6c6089c029249d48efa5c99adf7d51/server/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin', 'LC_ADDRESS': 'C.UTF-8', 'XDG_RUNTIME_DIR': '/run/user/1000', 'LANG': 'C.UTF-8', 'ANTIGRAVITY_CONVERSATION_ID': '3bd2b496-90a3-489b-94df-e59c4008bb1d', 'LC_TELEPHONE': 'C.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-9eb5728c12.sock', 'TERM_PROGRAM': 'vscode', 'AMENT_PREFIX_PATH': '/opt/ros/kilted', 'ANTIGRAVITY_PROJECT_ID': 'ae103469-0c37-48f2-aa09-728847a4df3c', 'SHELL': '/bin/bash', 'ANTIGRAVITY_LS_ADDRESS': 'localhost:45503', 'LC_NAME': 'C.UTF-8', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'LC_MEASUREMENT': 'C.UTF-8', 'LC_IDENTIFICATION': 'C.UTF-8', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'GIT_PAGER': 'cat', 'ANTIGRAVITY_TRAJECTORY_ID': '5d3fd1cf-0ea8-454e-b79b-d6cf61e3076f', 'PWD': '/home/tractor/ros2_ws/build/localization_system', 'LC_ALL': 'C.UTF-8', 'SSH_CONNECTION': '192.168.50.147 44238 192.168.50.118 22', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/opt/ros/kilted/lib/python3.12/site-packages', 'LC_NUMERIC': 'C.UTF-8', 'LC_PAPER': 'C.UTF-8', 'COLCON': '1', 'ANTIGRAVITY_CSRF_TOKEN': '', 'CMAKE_PREFIX_PATH': '/opt/ros/kilted'}), 'shell': False}
+[0.099799] (-) TimerEvent: {}
+[0.200529] (-) TimerEvent: {}
+[0.282307] (localization_system) StdoutLine: {'line': b'-- The C compiler identification is GNU 13.3.0\n'}
+[0.300742] (-) TimerEvent: {}
+[0.404079] (-) TimerEvent: {}
+[0.462397] (localization_system) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 13.3.0\n'}
+[0.498565] (localization_system) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.504285] (-) TimerEvent: {}
+[0.605532] (-) TimerEvent: {}
+[0.706284] (-) TimerEvent: {}
+[0.771263] (localization_system) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.786512] (localization_system) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc - skipped\n'}
+[0.786920] (localization_system) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.788182] (localization_system) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.807604] (-) TimerEvent: {}
+[0.822812] (localization_system) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.907718] (-) TimerEvent: {}
+[1.008138] (-) TimerEvent: {}
+[1.109231] (localization_system) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[1.110416] (-) TimerEvent: {}
+[1.141622] (localization_system) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[1.142524] (localization_system) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[1.147968] (localization_system) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[1.157308] (localization_system) StdoutLine: {'line': b'-- Found ament_cmake: 2.7.5 (/opt/ros/kilted/share/ament_cmake/cmake)\n'}
+[1.211617] (-) TimerEvent: {}
+[1.314883] (-) TimerEvent: {}
+[1.415883] (-) TimerEvent: {}
+[1.506024] (localization_system) StdoutLine: {'line': b'-- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter \n'}
+[1.516033] (-) TimerEvent: {}
+[1.616801] (-) TimerEvent: {}
+[1.717513] (-) TimerEvent: {}
+[1.810116] (localization_system) StdoutLine: {'line': b'-- Found rclcpp: 29.5.7 (/opt/ros/kilted/share/rclcpp/cmake)\n'}
+[1.817614] (-) TimerEvent: {}
+[1.878555] (localization_system) StdoutLine: {'line': b'-- Found rosidl_generator_c: 4.9.6 (/opt/ros/kilted/share/rosidl_generator_c/cmake)\n'}
+[1.895201] (localization_system) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 4.9.6 (/opt/ros/kilted/share/rosidl_generator_cpp/cmake)\n'}
+[1.915865] (localization_system) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[1.918487] (-) TimerEvent: {}
+[1.970821] (localization_system) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[2.018782] (-) TimerEvent: {}
+[2.113111] (localization_system) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 7.8.2 (/opt/ros/kilted/share/rmw_implementation_cmake/cmake)\n'}
+[2.116220] (localization_system) StdoutLine: {'line': b'-- Found rmw_fastrtps_cpp: 9.3.3 (/opt/ros/kilted/share/rmw_fastrtps_cpp/cmake)\n'}
+[2.118877] (-) TimerEvent: {}
+[2.219620] (-) TimerEvent: {}
+[2.313051] (localization_system) StdoutLine: {'line': b'-- Found OpenSSL: /usr/lib/aarch64-linux-gnu/libcrypto.so (found version "3.0.13")  \n'}
+[2.319705] (-) TimerEvent: {}
+[2.339428] (localization_system) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[2.419853] (-) TimerEvent: {}
+[2.477197] (localization_system) StdoutLine: {'line': b'-- Found sensor_msgs: 5.5.2 (/opt/ros/kilted/share/sensor_msgs/cmake)\n'}
+[2.519970] (-) TimerEvent: {}
+[2.577675] (localization_system) StdoutLine: {'line': b'-- Found nav_msgs: 5.5.2 (/opt/ros/kilted/share/nav_msgs/cmake)\n'}
+[2.620202] (-) TimerEvent: {}
+[2.637787] (localization_system) StdoutLine: {'line': b'-- Found robot_localization: 3.9.4 (/opt/ros/kilted/share/robot_localization/cmake)\n'}
+[2.720314] (-) TimerEvent: {}
+[2.820880] (-) TimerEvent: {}
+[2.921383] (-) TimerEvent: {}
+[3.021786] (-) TimerEvent: {}
+[3.122182] (-) TimerEvent: {}
+[3.135246] (localization_system) StdoutLine: {'line': b'-- Found eigen3_cmake_module: 0.4.0 (/opt/ros/kilted/share/eigen3_cmake_module/cmake)\n'}
+[3.140564] (localization_system) StdoutLine: {'line': b'-- Found Eigen3: TRUE (found version "3.4.0") \n'}
+[3.141367] (localization_system) StdoutLine: {'line': b'-- Ensuring Eigen3 include directory is part of orocos-kdl CMake target\n'}
+[3.175546] (localization_system) StderrLine: {'line': b'CMake Deprecation Warning at /opt/ros/kilted/share/ament_cmake_target_dependencies/cmake/ament_target_dependencies.cmake:87 (message):\n'}
+[3.176022] (localization_system) StderrLine: {'line': b'  ament_target_dependencies() is deprecated.  Use target_link_libraries()\n'}
+[3.176567] (localization_system) StderrLine: {'line': b'  with modern CMake targets instead.  Try replacing this call with:\n'}
+[3.177041] (localization_system) StderrLine: {'line': b'\n'}
+[3.177194] (localization_system) StderrLine: {'line': b'    target_link_libraries(imu_driver PUBLIC\n'}
+[3.177312] (localization_system) StderrLine: {'line': b'      ${sensor_msgs_TARGETS}\n'}
+[3.177431] (localization_system) StderrLine: {'line': b'      rclcpp::rclcpp\n'}
+[3.177616] (localization_system) StderrLine: {'line': b'      sensor_msgs::sensor_msgs_library\n'}
+[3.178069] (localization_system) StderrLine: {'line': b'    )\n'}
+[3.179182] (localization_system) StderrLine: {'line': b'\n'}
+[3.185840] (localization_system) StderrLine: {'line': b'Call Stack (most recent call first):\n'}
+[3.186034] (localization_system) StderrLine: {'line': b'  CMakeLists.txt:21 (ament_target_dependencies)\n'}
+[3.186169] (localization_system) StderrLine: {'line': b'\n'}
+[3.186285] (localization_system) StderrLine: {'line': b'\n'}
+[3.186616] (localization_system) StderrLine: {'line': b'CMake Deprecation Warning at /opt/ros/kilted/share/ament_cmake_target_dependencies/cmake/ament_target_dependencies.cmake:87 (message):\n'}
+[3.187179] (localization_system) StderrLine: {'line': b'  ament_target_dependencies() is deprecated.  Use target_link_libraries()\n'}
+[3.188191] (localization_system) StderrLine: {'line': b'  with modern CMake targets instead.  Try replacing this call with:\n'}
+[3.188686] (localization_system) StderrLine: {'line': b'\n'}
+[3.188823] (localization_system) StderrLine: {'line': b'    target_link_libraries(gps_driver PUBLIC\n'}
+[3.188923] (localization_system) StderrLine: {'line': b'      ${sensor_msgs_TARGETS}\n'}
+[3.189012] (localization_system) StderrLine: {'line': b'      rclcpp::rclcpp\n'}
+[3.189103] (localization_system) StderrLine: {'line': b'      sensor_msgs::sensor_msgs_library\n'}
+[3.189190] (localization_system) StderrLine: {'line': b'    )\n'}
+[3.189280] (localization_system) StderrLine: {'line': b'\n'}
+[3.189370] (localization_system) StderrLine: {'line': b'Call Stack (most recent call first):\n'}
+[3.189481] (localization_system) StderrLine: {'line': b'  CMakeLists.txt:25 (ament_target_dependencies)\n'}
+[3.189588] (localization_system) StderrLine: {'line': b'\n'}
+[3.189674] (localization_system) StderrLine: {'line': b'\n'}
+[3.222369] (-) TimerEvent: {}
+[3.327565] (-) TimerEvent: {}
+[3.421126] (localization_system) StdoutLine: {'line': b'-- Configuring done (3.3s)\n'}
+[3.427682] (-) TimerEvent: {}
+[3.492939] (localization_system) StdoutLine: {'line': b'-- Generating done (0.0s)\n'}
+[3.501511] (localization_system) StdoutLine: {'line': b'-- Build files have been written to: /home/tractor/ros2_ws/build/localization_system\n'}
+[3.525436] (localization_system) CommandEnded: {'returncode': 0}
+[3.528031] (localization_system) JobProgress: {'identifier': 'localization_system', 'progress': 'build'}
+[3.528216] (-) TimerEvent: {}
+[3.532503] (localization_system) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/tractor/ros2_ws/build/localization_system', '--', '-j4', '-l4'], 'cwd': '/home/tractor/ros2_ws/build/localization_system', 'env': OrderedDict({'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'tractor', 'ANTIGRAVITY_SOURCE_METADATA': '{"tool":{"conversationId":"3bd2b496-90a3-489b-94df-e59c4008bb1d","stepIndex":36,"toolCall":{"id":"q0aprdn9","name":"run_command","argumentsJson":"{\\"CommandLine\\":\\"colcon build --packages-select localization_system\\",\\"Cwd\\":\\"/home/tractor/ros2_ws\\",\\"WaitMsBeforeAsync\\":5000,\\"toolAction\\":\\"Building workspace\\",\\"toolSummary\\":\\"Run colcon build\\"}","thinkingSignature":"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","originalName":"run_command"}}}', 'SSH_CLIENT': '192.168.50.147 44238 22', 'LC_TIME': 'C.UTF-8', 'XDG_SESSION_TYPE': 'tty', 'GIT_ASKPASS': '/home/tractor/.vscode-server/cli/servers/Stable-8b640eef5a6c6089c029249d48efa5c99adf7d51/server/extensions/git/dist/askpass.sh', 'SHLVL': '2', 'LD_LIBRARY_PATH': '/opt/ros/kilted/lib/aarch64-linux-gnu:/opt/ros/kilted/lib', 'BROWSER': '/home/tractor/.vscode-server/cli/servers/Stable-8b640eef5a6c6089c029249d48efa5c99adf7d51/server/bin/helpers/browser.sh', 'HOME': '/home/tractor', 'OLDPWD': '/home/tractor', 'TERM_PROGRAM_VERSION': '1.119.0', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-c120f2e8-0e18-4b4d-8ff3-13a39336f535.sock', 'ROS_PYTHON_VERSION': '3', 'PAGER': 'cat', 'VSCODE_GIT_ASKPASS_MAIN': '/home/tractor/.vscode-server/cli/servers/Stable-8b640eef5a6c6089c029249d48efa5c99adf7d51/server/extensions/git/dist/askpass-main.js', 'LC_MONETARY': 'C.UTF-8', 'VSCODE_GIT_ASKPASS_NODE': '/home/tractor/.vscode-server/cli/servers/Stable-8b640eef5a6c6089c029249d48efa5c99adf7d51/server/node', 'VSCODE_PYTHON_AUTOACTIVATE_GUARD': '1', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'ANTIGRAVITY_AGENT': '1', 'ROS_DISTRO': 'kilted', 'LOGNAME': 'tractor', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'XDG_SESSION_CLASS': 'user', 'TERM': 'dumb', 'XDG_SESSION_ID': '4', 'PATH': '/home/tractor/.gemini/antigravity-cli/bin:/opt/ros/kilted/bin:/home/tractor/.local/bin:/home/tractor/.local/bin:/home/tractor/.vscode-server/cli/servers/Stable-8b640eef5a6c6089c029249d48efa5c99adf7d51/server/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin', 'LC_ADDRESS': 'C.UTF-8', 'XDG_RUNTIME_DIR': '/run/user/1000', 'LANG': 'C.UTF-8', 'ANTIGRAVITY_CONVERSATION_ID': '3bd2b496-90a3-489b-94df-e59c4008bb1d', 'LC_TELEPHONE': 'C.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-9eb5728c12.sock', 'TERM_PROGRAM': 'vscode', 'AMENT_PREFIX_PATH': '/opt/ros/kilted', 'ANTIGRAVITY_PROJECT_ID': 'ae103469-0c37-48f2-aa09-728847a4df3c', 'SHELL': '/bin/bash', 'ANTIGRAVITY_LS_ADDRESS': 'localhost:45503', 'LC_NAME': 'C.UTF-8', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'LC_MEASUREMENT': 'C.UTF-8', 'LC_IDENTIFICATION': 'C.UTF-8', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'GIT_PAGER': 'cat', 'ANTIGRAVITY_TRAJECTORY_ID': '5d3fd1cf-0ea8-454e-b79b-d6cf61e3076f', 'PWD': '/home/tractor/ros2_ws/build/localization_system', 'LC_ALL': 'C.UTF-8', 'SSH_CONNECTION': '192.168.50.147 44238 192.168.50.118 22', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/opt/ros/kilted/lib/python3.12/site-packages', 'LC_NUMERIC': 'C.UTF-8', 'LC_PAPER': 'C.UTF-8', 'COLCON': '1', 'ANTIGRAVITY_CSRF_TOKEN': '', 'CMAKE_PREFIX_PATH': '/opt/ros/kilted'}), 'shell': False}
+[3.628603] (-) TimerEvent: {}
+[3.702211] (localization_system) StdoutLine: {'line': b'[ 25%] \x1b[32mBuilding CXX object CMakeFiles/imu_driver.dir/src/imu_driver.cpp.o\x1b[0m\n'}
+[3.714711] (localization_system) StdoutLine: {'line': b'[ 50%] \x1b[32mBuilding CXX object CMakeFiles/gps_driver.dir/src/gps_driver.cpp.o\x1b[0m\n'}
+[3.729585] (-) TimerEvent: {}
+[3.830165] (-) TimerEvent: {}
+[3.931975] (-) TimerEvent: {}
+[4.038639] (-) TimerEvent: {}
+[4.139239] (-) TimerEvent: {}
+[4.242939] (-) TimerEvent: {}
+[4.343798] (-) TimerEvent: {}
+[4.445728] (-) TimerEvent: {}
+[4.551185] (-) TimerEvent: {}
+[4.652110] (-) TimerEvent: {}
+[4.753583] (-) TimerEvent: {}
+[4.855557] (-) TimerEvent: {}
+[4.956032] (-) TimerEvent: {}
+[5.056894] (-) TimerEvent: {}
+[5.158127] (-) TimerEvent: {}
+[5.258980] (-) TimerEvent: {}
+[5.361542] (-) TimerEvent: {}
+[5.461918] (-) TimerEvent: {}
+[5.562694] (-) TimerEvent: {}
+[5.663882] (-) TimerEvent: {}
+[5.768343] (-) TimerEvent: {}
+[5.869261] (-) TimerEvent: {}
+[5.973911] (-) TimerEvent: {}
+[6.079980] (-) TimerEvent: {}
+[6.184614] (-) TimerEvent: {}
+[6.287720] (-) TimerEvent: {}
+[6.388802] (-) TimerEvent: {}
+[6.489671] (-) TimerEvent: {}
+[6.591554] (-) TimerEvent: {}
+[6.694662] (-) TimerEvent: {}
+[6.795419] (-) TimerEvent: {}
+[6.896112] (-) TimerEvent: {}
+[7.000472] (-) TimerEvent: {}
+[7.101387] (-) TimerEvent: {}
+[7.204634] (-) TimerEvent: {}
+[7.305727] (-) TimerEvent: {}
+[7.409620] (-) TimerEvent: {}
+[7.511616] (-) TimerEvent: {}
+[7.613924] (-) TimerEvent: {}
+[7.714691] (-) TimerEvent: {}
+[7.817881] (-) TimerEvent: {}
+[7.920693] (-) TimerEvent: {}
+[8.021550] (-) TimerEvent: {}
+[8.121949] (-) TimerEvent: {}
+[8.222796] (-) TimerEvent: {}
+[8.323198] (-) TimerEvent: {}
+[8.423740] (-) TimerEvent: {}
+[8.524137] (-) TimerEvent: {}
+[8.624664] (-) TimerEvent: {}
+[8.725119] (-) TimerEvent: {}
+[8.826177] (-) TimerEvent: {}
+[8.926859] (-) TimerEvent: {}
+[9.031547] (-) TimerEvent: {}
+[9.132703] (-) TimerEvent: {}
+[9.233165] (-) TimerEvent: {}
+[9.334934] (-) TimerEvent: {}
+[9.435825] (-) TimerEvent: {}
+[9.536723] (-) TimerEvent: {}
+[9.639633] (-) TimerEvent: {}
+[9.740605] (-) TimerEvent: {}
+[9.843554] (-) TimerEvent: {}
+[9.944004] (-) TimerEvent: {}
+[10.044546] (-) TimerEvent: {}
+[10.145082] (-) TimerEvent: {}
+[10.245922] (-) TimerEvent: {}
+[10.349390] (-) TimerEvent: {}
+[10.449915] (-) TimerEvent: {}
+[10.550787] (-) TimerEvent: {}
+[10.654970] (-) TimerEvent: {}
+[10.755704] (-) TimerEvent: {}
+[10.856673] (-) TimerEvent: {}
+[10.963110] (-) TimerEvent: {}
+[11.065553] (-) TimerEvent: {}
+[11.166184] (-) TimerEvent: {}
+[11.268986] (-) TimerEvent: {}
+[11.371816] (-) TimerEvent: {}
+[11.473541] (-) TimerEvent: {}
+[11.574092] (-) TimerEvent: {}
+[11.674680] (-) TimerEvent: {}
+[11.775393] (-) TimerEvent: {}
+[11.876791] (-) TimerEvent: {}
+[11.979917] (-) TimerEvent: {}
+[12.080597] (-) TimerEvent: {}
+[12.181546] (-) TimerEvent: {}
+[12.250658] (localization_system) StderrLine: {'line': b'/home/tractor/ros2_ws/src/localization_system/src/gps_driver.cpp: In member function \xe2\x80\x98void GpsDriverNode::serial_loop()\xe2\x80\x99:\n'}
+[12.252540] (localization_system) StderrLine: {'line': b'/home/tractor/ros2_ws/src/localization_system/src/gps_driver.cpp:201:94: error: \xe2\x80\x98COVARIANCE_TYPE_DIAGONAL\xe2\x80\x99 is not a member of \xe2\x80\x98sensor_msgs::msg::NavSatFix\xe2\x80\x99 {aka \xe2\x80\x98sensor_msgs::msg::NavSatFix_<std::allocator<void> >\xe2\x80\x99}\n'}
+[12.256435] (localization_system) StderrLine: {'line': b'  201 |                             fix_msg_.position_covariance_type = sensor_msgs::msg::NavSatFix::COVARIANCE_TYPE_DIAGONAL;\n'}
+[12.256762] (localization_system) StderrLine: {'line': b'      |                                                                                              ^~~~~~~~~~~~~~~~~~~~~~~~\n'}
+[12.281910] (-) TimerEvent: {}
+[12.382620] (-) TimerEvent: {}
+[12.485611] (-) TimerEvent: {}
+[12.586423] (-) TimerEvent: {}
+[12.687419] (-) TimerEvent: {}
+[12.788324] (-) TimerEvent: {}
+[12.889386] (-) TimerEvent: {}
+[12.994681] (-) TimerEvent: {}
+[13.096001] (-) TimerEvent: {}
+[13.209857] (-) TimerEvent: {}
+[13.311371] (-) TimerEvent: {}
+[13.413442] (-) TimerEvent: {}
+[13.513956] (-) TimerEvent: {}
+[13.614499] (-) TimerEvent: {}
+[13.715139] (-) TimerEvent: {}
+[13.815662] (-) TimerEvent: {}
+[13.918552] (-) TimerEvent: {}
+[14.019245] (-) TimerEvent: {}
+[14.120621] (-) TimerEvent: {}
+[14.221513] (-) TimerEvent: {}
+[14.322996] (-) TimerEvent: {}
+[14.424792] (-) TimerEvent: {}
+[14.528092] (-) TimerEvent: {}
+[14.628830] (-) TimerEvent: {}
+[14.729560] (-) TimerEvent: {}
+[14.834554] (-) TimerEvent: {}
+[14.935109] (-) TimerEvent: {}
+[15.037588] (-) TimerEvent: {}
+[15.141006] (-) TimerEvent: {}
+[15.242742] (-) TimerEvent: {}
+[15.345164] (-) TimerEvent: {}
+[15.447569] (-) TimerEvent: {}
+[15.548021] (-) TimerEvent: {}
+[15.648922] (-) TimerEvent: {}
+[15.749693] (-) TimerEvent: {}
+[15.850173] (-) TimerEvent: {}
+[15.951112] (-) TimerEvent: {}
+[16.055209] (-) TimerEvent: {}
+[16.156100] (-) TimerEvent: {}
+[16.257238] (-) TimerEvent: {}
+[16.359883] (-) TimerEvent: {}
+[16.460926] (-) TimerEvent: {}
+[16.564263] (-) TimerEvent: {}
+[16.666798] (-) TimerEvent: {}
+[16.769381] (-) TimerEvent: {}
+[16.854152] (localization_system) StderrLine: {'line': b'gmake[2]: *** [CMakeFiles/gps_driver.dir/build.make:76: CMakeFiles/gps_driver.dir/src/gps_driver.cpp.o] Error 1\n'}
+[16.856106] (localization_system) StderrLine: {'line': b'gmake[1]: *** [CMakeFiles/Makefile2:165: CMakeFiles/gps_driver.dir/all] Error 2\n'}
+[16.857828] (localization_system) StderrLine: {'line': b'gmake[1]: *** Waiting for unfinished jobs....\n'}
+[16.871022] (-) TimerEvent: {}
+[16.975332] (-) TimerEvent: {}
+[17.076725] (-) TimerEvent: {}
+[17.177118] (-) TimerEvent: {}
+[17.278237] (-) TimerEvent: {}
+[17.380204] (-) TimerEvent: {}
+[17.481911] (-) TimerEvent: {}
+[17.584528] (-) TimerEvent: {}
+[17.685222] (-) TimerEvent: {}
+[17.786817] (-) TimerEvent: {}
+[17.888310] (-) TimerEvent: {}
+[17.989712] (-) TimerEvent: {}
+[18.090227] (-) TimerEvent: {}
+[18.190658] (-) TimerEvent: {}
+[18.291095] (-) TimerEvent: {}
+[18.391523] (-) TimerEvent: {}
+[18.491999] (-) TimerEvent: {}
+[18.592665] (-) TimerEvent: {}
+[18.693858] (-) TimerEvent: {}
+[18.796602] (-) TimerEvent: {}
+[18.897162] (-) TimerEvent: {}
+[18.997555] (-) TimerEvent: {}
+[19.097994] (-) TimerEvent: {}
+[19.198415] (-) TimerEvent: {}
+[19.299046] (-) TimerEvent: {}
+[19.401599] (-) TimerEvent: {}
+[19.502503] (-) TimerEvent: {}
+[19.603746] (-) TimerEvent: {}
+[19.704345] (-) TimerEvent: {}
+[19.806391] (-) TimerEvent: {}
+[19.906855] (-) TimerEvent: {}
+[20.008574] (-) TimerEvent: {}
+[20.109562] (-) TimerEvent: {}
+[20.212483] (-) TimerEvent: {}
+[20.313058] (-) TimerEvent: {}
+[20.413496] (-) TimerEvent: {}
+[20.514181] (-) TimerEvent: {}
+[20.615431] (-) TimerEvent: {}
+[20.716040] (-) TimerEvent: {}
+[20.817182] (-) TimerEvent: {}
+[20.918894] (-) TimerEvent: {}
+[21.019760] (-) TimerEvent: {}
+[21.120707] (-) TimerEvent: {}
+[21.221133] (-) TimerEvent: {}
+[21.321831] (-) TimerEvent: {}
+[21.422479] (-) TimerEvent: {}
+[21.525694] (-) TimerEvent: {}
+[21.626598] (-) TimerEvent: {}
+[21.729732] (-) TimerEvent: {}
+[21.831576] (-) TimerEvent: {}
+[21.933640] (-) TimerEvent: {}
+[22.034580] (-) TimerEvent: {}
+[22.135719] (-) TimerEvent: {}
+[22.236195] (-) TimerEvent: {}
+[22.336644] (-) TimerEvent: {}
+[22.437084] (-) TimerEvent: {}
+[22.537649] (-) TimerEvent: {}
+[22.638226] (-) TimerEvent: {}
+[22.739127] (-) TimerEvent: {}
+[22.840274] (-) TimerEvent: {}
+[22.941869] (-) TimerEvent: {}
+[23.043159] (-) TimerEvent: {}
+[23.143740] (-) TimerEvent: {}
+[23.246722] (-) TimerEvent: {}
+[23.347721] (-) TimerEvent: {}
+[23.448241] (-) TimerEvent: {}
+[23.548721] (-) TimerEvent: {}
+[23.628108] (localization_system) StdoutLine: {'line': b'[ 75%] \x1b[32m\x1b[1mLinking CXX executable imu_driver\x1b[0m\n'}
+[23.648887] (-) TimerEvent: {}
+[23.749657] (-) TimerEvent: {}
+[23.850852] (-) TimerEvent: {}
+[23.952847] (-) TimerEvent: {}
+[24.054540] (-) TimerEvent: {}
+[24.154584] (localization_system) StdoutLine: {'line': b'[ 75%] Built target imu_driver\n'}
+[24.155095] (-) TimerEvent: {}
+[24.157758] (localization_system) StderrLine: {'line': b'gmake: *** [Makefile:146: all] Error 2\n'}
+[24.164589] (localization_system) CommandEnded: {'returncode': 2}
+[24.232888] (localization_system) JobEnded: {'identifier': 'localization_system', 'rc': 2}
+[24.245579] (-) EventReactorShutdown: {}

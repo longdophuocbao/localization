@@ -1,0 +1,30 @@
+[2.024s] Invoking command in '/home/tractor/ros2_ws/src/localization_system': PYTHONPATH=/home/tractor/ros2_ws/build/localization_system/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/tractor/ros2_ws/install/localization_system/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/localization_system build --build-base /home/tractor/ros2_ws/build/localization_system/build install --record /home/tractor/ros2_ws/build/localization_system/install.log --single-version-externally-managed install_data
+[2.707s] running egg_info
+[2.708s] creating ../../build/localization_system/localization_system.egg-info
+[2.740s] writing ../../build/localization_system/localization_system.egg-info/PKG-INFO
+[2.741s] writing dependency_links to ../../build/localization_system/localization_system.egg-info/dependency_links.txt
+[2.742s] writing entry points to ../../build/localization_system/localization_system.egg-info/entry_points.txt
+[2.742s] writing requirements to ../../build/localization_system/localization_system.egg-info/requires.txt
+[2.742s] writing top-level names to ../../build/localization_system/localization_system.egg-info/top_level.txt
+[2.743s] writing manifest file '../../build/localization_system/localization_system.egg-info/SOURCES.txt'
+[2.812s] reading manifest file '../../build/localization_system/localization_system.egg-info/SOURCES.txt'
+[2.815s] writing manifest file '../../build/localization_system/localization_system.egg-info/SOURCES.txt'
+[2.815s] running build
+[2.815s] running install
+[2.829s] running install_data
+[2.829s] creating /home/tractor/ros2_ws/install/localization_system/share/ament_index
+[2.830s] creating /home/tractor/ros2_ws/install/localization_system/share/ament_index/resource_index
+[2.830s] creating /home/tractor/ros2_ws/install/localization_system/share/ament_index/resource_index/packages
+[2.830s] copying resource/localization_system -> /home/tractor/ros2_ws/install/localization_system/share/ament_index/resource_index/packages
+[2.831s] copying package.xml -> /home/tractor/ros2_ws/install/localization_system/share/localization_system
+[2.831s] creating /home/tractor/ros2_ws/install/localization_system/share/localization_system/launch
+[2.832s] copying launch/localization.launch.py -> /home/tractor/ros2_ws/install/localization_system/share/localization_system/launch
+[2.832s] creating /home/tractor/ros2_ws/install/localization_system/share/localization_system/config
+[2.832s] copying config/ekf.yaml -> /home/tractor/ros2_ws/install/localization_system/share/localization_system/config
+[2.833s] running install_egg_info
+[2.891s] Copying ../../build/localization_system/localization_system.egg-info to /home/tractor/ros2_ws/install/localization_system/lib/python3.12/site-packages/localization_system-0.0.0-py3.12.egg-info
+[2.892s] running install_scripts
+[3.204s] Installing gps_driver script to /home/tractor/ros2_ws/install/localization_system/bin
+[3.205s] Installing imu_driver script to /home/tractor/ros2_ws/install/localization_system/bin
+[3.205s] writing list of installed files to '/home/tractor/ros2_ws/build/localization_system/install.log'
+[3.351s] Invoked command in '/home/tractor/ros2_ws/src/localization_system' returned '0': PYTHONPATH=/home/tractor/ros2_ws/build/localization_system/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/tractor/ros2_ws/install/localization_system/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/localization_system build --build-base /home/tractor/ros2_ws/build/localization_system/build install --record /home/tractor/ros2_ws/build/localization_system/install.log --single-version-externally-managed install_data
