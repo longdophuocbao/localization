@@ -3,16 +3,15 @@
 #include <string>
 #include <vector>
 #include <cmath>
-#include <thread>
 #include <chrono>
 #include <algorithm>
 #include <numeric>
-#include <atomic>
+#include <cstring>
 #include "serial_port.hpp"
 
 class ImuDriverNode : public rclcpp::Node {
 public:
-    ImuDriverNode() : Node("imu_driver"), is_running_(true) {
+    ImuDriverNode() : Node("imu_driver") {
         // Declare parameters
         this->declare_parameter<std::string>("port", "/dev/ttyACM3");
         this->declare_parameter<int>("baud", 115200);
@@ -49,16 +48,16 @@ public:
             0.0, 0.0, 0.01
         };
 
-        // Start serial loop in thread
-        read_thread_ = std::thread(&ImuDriverNode::serial_loop, this);
+        // Start timer callback at 200 Hz (every 5ms)
+        timer_ = this->create_wall_timer(
+            std::chrono::milliseconds(5),
+            std::bind(&ImuDriverNode::timer_callback, this)
+        );
     }
 
     ~ImuDriverNode() {
-        is_running_ = false;
-        if (read_thread_.joinable()) {
-            read_thread_.join();
-        }
         serial_conn_.close_port();
+        RCLCPP_INFO(this->get_logger(), "IMU driver stopped cleanly.");
     }
 
 private:
@@ -86,114 +85,105 @@ private:
         qw = std::cos(r/2) * std::cos(p/2) * std::cos(y/2) + std::sin(r/2) * std::sin(p/2) * std::sin(y/2);
     }
 
-    void serial_loop() {
-        std::vector<uint8_t> buf;
+    void timer_callback() {
+        // Connect if port is not open
+        if (!serial_conn_.is_open()) {
+            if (serial_conn_.open_port(port_, baud_)) {
+                RCLCPP_INFO(this->get_logger(), "Successfully connected to IMU at %s", port_.c_str());
+                buf_.clear();
+            } else {
+                RCLCPP_ERROR_THROTTLE(this->get_logger(), *this->get_clock(), 5000,
+                                      "Failed to connect to IMU at %s, retrying...", port_.c_str());
+                return;
+            }
+        }
+
+        // Read available serial data
         uint8_t read_buf[1024];
+        ssize_t bytes_read = serial_conn_.read_data(read_buf, sizeof(read_buf));
+        if (bytes_read > 0) {
+            buf_.insert(buf_.end(), read_buf, read_buf + bytes_read);
+        } else if (bytes_read < 0) {
+            RCLCPP_ERROR(this->get_logger(), "Read error from IMU, closing port.");
+            serial_conn_.close_port();
+            return;
+        } else {
+            // No data currently available
+            return;
+        }
 
-        while (rclcpp::ok() && is_running_) {
-            try {
-                if (!serial_conn_.is_open()) {
-                    if (serial_conn_.open_port(port_, baud_)) {
-                        RCLCPP_INFO(this->get_logger(), "Successfully connected to IMU at %s", port_.c_str());
-                        buf.clear();
-                    } else {
-                        RCLCPP_ERROR(this->get_logger(), "Failed to connect to IMU at %s, retrying...", port_.c_str());
-                        std::this_thread::sleep_for(std::chrono::seconds(1));
-                        continue;
-                    }
-                }
+        // Process WT901 packets (each packet is 11 bytes starting with 0x55)
+        while (buf_.size() >= 11) {
+            auto it = std::find(buf_.begin(), buf_.end(), 0x55);
+            if (it == buf_.end()) {
+                buf_.clear();
+                break;
+            }
+            size_t idx = std::distance(buf_.begin(), it);
+            if (idx > 0) {
+                buf_.erase(buf_.begin(), buf_.begin() + idx);
+                continue;
+            }
 
-                ssize_t bytes_read = serial_conn_.read_data(read_buf, sizeof(read_buf));
-                if (bytes_read > 0) {
-                    buf.insert(buf.end(), read_buf, read_buf + bytes_read);
-                } else if (bytes_read < 0) {
-                    RCLCPP_ERROR(this->get_logger(), "Read error from IMU");
-                    serial_conn_.close_port();
-                    std::this_thread::sleep_for(std::chrono::seconds(1));
-                    continue;
-                } else {
-                    std::this_thread::sleep_for(std::chrono::milliseconds(1));
-                    continue;
-                }
+            if (buf_.size() < 11) {
+                break;
+            }
 
-                // Process packets
-                while (buf.size() >= 11) {
-                    auto it = std::find(buf.begin(), buf.end(), 0x55);
-                    if (it == buf.end()) {
-                        buf.clear();
-                        break;
-                    }
-                    size_t idx = std::distance(buf.begin(), it);
-                    if (idx > 0) {
-                        buf.erase(buf.begin(), buf.begin() + idx);
-                        continue;
-                    }
+            // Checksum verification
+            uint8_t chksum = 0;
+            for (size_t i = 0; i < 10; ++i) {
+                chksum += buf_[i];
+            }
+            if (chksum != buf_[10]) {
+                buf_.erase(buf_.begin());
+                continue;
+            }
 
-                    if (buf.size() < 11) {
-                        break;
-                    }
+            // Extract packet
+            std::vector<uint8_t> packet(buf_.begin(), buf_.begin() + 11);
+            buf_.erase(buf_.begin(), buf_.begin() + 11);
 
-                    // Checksum verification
-                    uint8_t chksum = 0;
-                    for (size_t i = 0; i < 10; ++i) {
-                        chksum += buf[i];
-                    }
-                    if (chksum != buf[10]) {
-                        buf.erase(buf.begin());
-                        continue;
-                    }
+            uint8_t p_type = packet[1];
+            auto current_time = this->get_clock()->now();
+            imu_msg_.header.stamp = current_time;
 
-                    // Extract packet
-                    std::vector<uint8_t> packet(buf.begin(), buf.begin() + 11);
-                    buf.erase(buf.begin(), buf.begin() + 11);
+            if (p_type == 0x51) { // Acceleration
+                int16_t ax_raw = parse_short(packet[2], packet[3]);
+                int16_t ay_raw = parse_short(packet[4], packet[5]);
+                int16_t az_raw = parse_short(packet[6], packet[7]);
+                
+                imu_msg_.linear_acceleration.x = static_cast<double>(ax_raw) / 32768.0 * 16.0 * 9.80665;
+                imu_msg_.linear_acceleration.y = static_cast<double>(ay_raw) / 32768.0 * 16.0 * 9.80665;
+                imu_msg_.linear_acceleration.z = static_cast<double>(az_raw) / 32768.0 * 16.0 * 9.80665;
+                
+            } else if (p_type == 0x52) { // Angular velocity
+                int16_t wx_raw = parse_short(packet[2], packet[3]);
+                int16_t wy_raw = parse_short(packet[4], packet[5]);
+                int16_t wz_raw = parse_short(packet[6], packet[7]);
 
-                    uint8_t p_type = packet[1];
-                    auto current_time = this->get_clock()->now();
-                    imu_msg_.header.stamp = current_time;
+                imu_msg_.angular_velocity.x = static_cast<double>(wx_raw) / 32768.0 * 2000.0 * (M_PI / 180.0);
+                imu_msg_.angular_velocity.y = static_cast<double>(wy_raw) / 32768.0 * 2000.0 * (M_PI / 180.0);
+                imu_msg_.angular_velocity.z = static_cast<double>(wz_raw) / 32768.0 * 2000.0 * (M_PI / 180.0);
 
-                    if (p_type == 0x51) { // Acceleration
-                        int16_t ax_raw = parse_short(packet[2], packet[3]);
-                        int16_t ay_raw = parse_short(packet[4], packet[5]);
-                        int16_t az_raw = parse_short(packet[6], packet[7]);
-                        
-                        imu_msg_.linear_acceleration.x = static_cast<double>(ax_raw) / 32768.0 * 16.0 * 9.80665;
-                        imu_msg_.linear_acceleration.y = static_cast<double>(ay_raw) / 32768.0 * 16.0 * 9.80665;
-                        imu_msg_.linear_acceleration.z = static_cast<double>(az_raw) / 32768.0 * 16.0 * 9.80665;
-                        
-                    } else if (p_type == 0x52) { // Angular velocity
-                        int16_t wx_raw = parse_short(packet[2], packet[3]);
-                        int16_t wy_raw = parse_short(packet[4], packet[5]);
-                        int16_t wz_raw = parse_short(packet[6], packet[7]);
+            } else if (p_type == 0x53) { // Angle
+                int16_t r_raw = parse_short(packet[2], packet[3]);
+                int16_t p_raw = parse_short(packet[4], packet[5]);
+                int16_t y_raw = parse_short(packet[6], packet[7]);
 
-                        imu_msg_.angular_velocity.x = static_cast<double>(wx_raw) / 32768.0 * 2000.0 * (M_PI / 180.0);
-                        imu_msg_.angular_velocity.y = static_cast<double>(wy_raw) / 32768.0 * 2000.0 * (M_PI / 180.0);
-                        imu_msg_.angular_velocity.z = static_cast<double>(wz_raw) / 32768.0 * 2000.0 * (M_PI / 180.0);
+                double roll = static_cast<double>(r_raw) / 32768.0 * 180.0;
+                double pitch = static_cast<double>(p_raw) / 32768.0 * 180.0;
+                double yaw = static_cast<double>(y_raw) / 32768.0 * 180.0;
 
-                    } else if (p_type == 0x53) { // Angle
-                        int16_t r_raw = parse_short(packet[2], packet[3]);
-                        int16_t p_raw = parse_short(packet[4], packet[5]);
-                        int16_t y_raw = parse_short(packet[6], packet[7]);
+                double qx, qy, qz, qw;
+                euler_to_quaternion(roll, pitch, yaw, qx, qy, qz, qw);
 
-                        double roll = static_cast<double>(r_raw) / 32768.0 * 180.0;
-                        double pitch = static_cast<double>(p_raw) / 32768.0 * 180.0;
-                        double yaw = static_cast<double>(y_raw) / 32768.0 * 180.0;
+                imu_msg_.orientation.x = qx;
+                imu_msg_.orientation.y = qy;
+                imu_msg_.orientation.z = qz;
+                imu_msg_.orientation.w = qw;
 
-                        double qx, qy, qz, qw;
-                        euler_to_quaternion(roll, pitch, yaw, qx, qy, qz, qw);
-
-                        imu_msg_.orientation.x = qx;
-                        imu_msg_.orientation.y = qy;
-                        imu_msg_.orientation.z = qz;
-                        imu_msg_.orientation.w = qw;
-
-                        // Publish orientation when it comes in (usually last in group)
-                        imu_pub_->publish(imu_msg_);
-                    }
-                }
-            } catch (const std::exception& e) {
-                RCLCPP_ERROR(this->get_logger(), "Error in IMU serial loop: %s", e.what());
-                serial_conn_.close_port();
-                std::this_thread::sleep_for(std::chrono::seconds(1));
+                // Publish orientation when it comes in (usually last in group)
+                imu_pub_->publish(imu_msg_);
             }
         }
     }
@@ -207,11 +197,11 @@ private:
     // ROS
     rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr imu_pub_;
     sensor_msgs::msg::Imu imu_msg_;
+    rclcpp::TimerBase::SharedPtr timer_;
 
-    // Threading
-    std::thread read_thread_;
-    std::atomic<bool> is_running_;
+    // Serial
     SerialPort serial_conn_;
+    std::vector<uint8_t> buf_;
 };
 
 int main(int argc, char** argv) {
