@@ -4,11 +4,9 @@
 #include <string>
 #include <vector>
 #include <cmath>
-#include <thread>
 #include <chrono>
 #include <algorithm>
 #include <cstring>
-#include <atomic>
 #include "serial_port.hpp"
 
 #pragma pack(push, 1)
@@ -38,7 +36,7 @@ struct UbxNavPvt {
 
 class GpsDriverNode : public rclcpp::Node {
 public:
-    GpsDriverNode() : Node("gps_driver"), is_running_(true) {
+    GpsDriverNode() : Node("gps_driver") {
         // Declare parameters
         this->declare_parameter<std::string>("port", "/dev/ttyACM4");
         this->declare_parameter<int>("baud", 115200);
@@ -56,158 +54,148 @@ public:
         // Pre-configure GPS message
         fix_msg_.header.frame_id = frame_id_;
 
-        // Start serial loop in thread
-        read_thread_ = std::thread(&GpsDriverNode::serial_loop, this);
+        // Start ROS 2 timer callback at 100 Hz (every 10ms)
+        timer_ = this->create_wall_timer(
+            std::chrono::milliseconds(10),
+            std::bind(&GpsDriverNode::timer_callback, this)
+        );
     }
 
     ~GpsDriverNode() {
-        is_running_ = false;
-        if (read_thread_.joinable()) {
-            read_thread_.join();
-        }
         serial_conn_.close_port();
+        RCLCPP_INFO(this->get_logger(), "GPS driver stopped cleanly.");
     }
 
 private:
-    void serial_loop() {
-        std::vector<uint8_t> buf;
+    void timer_callback() {
+        // Attempt connection if not open
+        if (!serial_conn_.is_open()) {
+            if (serial_conn_.open_port(port_, baud_)) {
+                RCLCPP_INFO(this->get_logger(), "Successfully connected to GPS at %s", port_.c_str());
+                buf_.clear();
+            } else {
+                RCLCPP_ERROR_THROTTLE(this->get_logger(), *this->get_clock(), 5000,
+                                      "Failed to connect to GPS at %s, retrying...", port_.c_str());
+                return;
+            }
+        }
+
+        // Read available data
         uint8_t read_buf[1024];
+        ssize_t bytes_read = serial_conn_.read_data(read_buf, sizeof(read_buf));
+        if (bytes_read > 0) {
+            buf_.insert(buf_.end(), read_buf, read_buf + bytes_read);
+        } else if (bytes_read < 0) {
+            RCLCPP_ERROR(this->get_logger(), "Read error from GPS, closing port.");
+            serial_conn_.close_port();
+            return;
+        } else {
+            // No data currently available (normal for non-blocking read)
+            return;
+        }
 
-        while (rclcpp::ok() && is_running_) {
-            try {
-                if (!serial_conn_.is_open()) {
-                    if (serial_conn_.open_port(port_, baud_)) {
-                        RCLCPP_INFO(this->get_logger(), "Successfully connected to GPS at %s", port_.c_str());
-                        buf.clear();
-                    } else {
-                        RCLCPP_ERROR(this->get_logger(), "Failed to connect to GPS at %s, retrying...", port_.c_str());
-                        std::this_thread::sleep_for(std::chrono::seconds(1));
-                        continue;
-                    }
+        // Process UBX packets
+        while (buf_.size() >= 100) {
+            // Find UBX sync char 0xb5 0x62
+            size_t idx = std::string::npos;
+            for (size_t i = 0; i + 1 < buf_.size(); ++i) {
+                if (buf_[i] == 0xb5 && buf_[i+1] == 0x62) {
+                    idx = i;
+                    break;
                 }
+            }
 
-                ssize_t bytes_read = serial_conn_.read_data(read_buf, sizeof(read_buf));
-                if (bytes_read > 0) {
-                    buf.insert(buf.end(), read_buf, read_buf + bytes_read);
-                } else if (bytes_read < 0) {
-                    RCLCPP_ERROR(this->get_logger(), "Read error from GPS");
-                    serial_conn_.close_port();
-                    std::this_thread::sleep_for(std::chrono::seconds(1));
-                    continue;
+            if (idx == std::string::npos) {
+                // Clear all except the last byte if it might be the sync start
+                if (!buf_.empty() && buf_.back() == 0xb5) {
+                    uint8_t last = buf_.back();
+                    buf_.clear();
+                    buf_.push_back(last);
                 } else {
-                    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-                    continue;
+                    buf_.clear();
                 }
+                break;
+            }
 
-                // Process UBX packets
-                while (buf.size() >= 100) {
-                    // Find UBX sync char 0xb5 0x62
-                    size_t idx = std::string::npos;
-                    for (size_t i = 0; i + 1 < buf.size(); ++i) {
-                        if (buf[i] == 0xb5 && buf[i+1] == 0x62) {
-                            idx = i;
-                            break;
-                        }
-                    }
+            if (idx > 0) {
+                buf_.erase(buf_.begin(), buf_.begin() + idx);
+                continue;
+            }
 
-                    if (idx == std::string::npos) {
-                        // Clear all except the last byte if it might be the sync start
-                        if (!buf.empty() && buf.back() == 0xb5) {
-                            uint8_t last = buf.back();
-                            buf.clear();
-                            buf.push_back(last);
+            if (buf_.size() < 6) {
+                break;
+            }
+
+            uint16_t payload_len = (buf_[5] << 8) | buf_[4];
+            size_t packet_len = 6 + payload_len + 2;
+
+            if (buf_.size() < packet_len) {
+                break; // Need more data
+            }
+
+            std::vector<uint8_t> packet(buf_.begin(), buf_.begin() + packet_len);
+            buf_.erase(buf_.begin(), buf_.begin() + packet_len);
+
+            // Verify Fletcher checksum
+            uint8_t ck_a = 0;
+            uint8_t ck_b = 0;
+            for (size_t i = 2; i < packet.size() - 2; ++i) {
+                ck_a = (ck_a + packet[i]) & 0xFF;
+                ck_b = (ck_b + ck_a) & 0xFF;
+            }
+
+            if (ck_a != packet[packet.size() - 2] || ck_b != packet[packet.size() - 1]) {
+                continue;
+            }
+
+            uint8_t cls = packet[2];
+            uint8_t msg_id = packet[3];
+
+            if (cls == 0x01 && msg_id == 0x07) { // UBX-NAV-PVT
+                if (payload_len >= 48) {
+                    UbxNavPvt pvt;
+                    std::memcpy(&pvt, &packet[6], sizeof(UbxNavPvt));
+
+                    auto current_time = this->get_clock()->now();
+                    fix_msg_.header.stamp = current_time;
+
+                    // Set coordinates
+                    fix_msg_.latitude = pvt.lat / 10000000.0;
+                    fix_msg_.longitude = pvt.lon / 10000000.0;
+                    fix_msg_.altitude = pvt.height / 1000.0; // Height above ellipsoid
+
+                    // Set status
+                    // ZED-F9P RTK status check (flags: 0x40 is RTK float, 0x80 is RTK fixed)
+                    bool is_rtk = (pvt.flags & 0xC0) != 0;
+                    if (pvt.fixType >= 2) {
+                        if (is_rtk) {
+                            fix_msg_.status.status = sensor_msgs::msg::NavSatStatus::STATUS_GBAS_FIX;
                         } else {
-                            buf.clear();
+                            fix_msg_.status.status = sensor_msgs::msg::NavSatStatus::STATUS_FIX;
                         }
-                        break;
+                    } else {
+                        fix_msg_.status.status = sensor_msgs::msg::NavSatStatus::STATUS_NO_FIX;
                     }
 
-                    if (idx > 0) {
-                        buf.erase(buf.begin(), buf.begin() + idx);
-                        continue;
-                    }
+                    fix_msg_.status.service = sensor_msgs::msg::NavSatStatus::SERVICE_GPS;
 
-                    if (buf.size() < 6) {
-                        break;
-                    }
+                    // Convert hAcc/vAcc to position covariance (diagonal)
+                    double h_var = std::pow(pvt.hAcc / 1000.0, 2);
+                    double v_var = std::pow(pvt.vAcc / 1000.0, 2);
 
-                    uint16_t payload_len = (buf[5] << 8) | buf[4];
-                    size_t packet_len = 6 + payload_len + 2;
+                    // Ensure variance is non-zero
+                    h_var = std::max(h_var, 0.0001);
+                    v_var = std::max(v_var, 0.0001);
 
-                    if (buf.size() < packet_len) {
-                        break; // Need more data
-                    }
+                    fix_msg_.position_covariance = {
+                        h_var, 0.0, 0.0,
+                        0.0, h_var, 0.0,
+                        0.0, 0.0, v_var
+                    };
+                    fix_msg_.position_covariance_type = sensor_msgs::msg::NavSatFix::COVARIANCE_TYPE_DIAGONAL_KNOWN;
 
-                    std::vector<uint8_t> packet(buf.begin(), buf.begin() + packet_len);
-                    buf.erase(buf.begin(), buf.begin() + packet_len);
-
-                    // Verify Fletcher checksum
-                    uint8_t ck_a = 0;
-                    uint8_t ck_b = 0;
-                    for (size_t i = 2; i < packet.size() - 2; ++i) {
-                        ck_a = (ck_a + packet[i]) & 0xFF;
-                        ck_b = (ck_b + ck_a) & 0xFF;
-                    }
-
-                    if (ck_a != packet[packet.size() - 2] || ck_b != packet[packet.size() - 1]) {
-                        continue;
-                    }
-
-                    uint8_t cls = packet[2];
-                    uint8_t msg_id = packet[3];
-
-                    if (cls == 0x01 && msg_id == 0x07) { // UBX-NAV-PVT
-                        if (payload_len >= 48) {
-                            UbxNavPvt pvt;
-                            std::memcpy(&pvt, &packet[6], sizeof(UbxNavPvt));
-
-                            auto current_time = this->get_clock()->now();
-                            fix_msg_.header.stamp = current_time;
-
-                            // Set coordinates
-                            fix_msg_.latitude = pvt.lat / 10000000.0;
-                            fix_msg_.longitude = pvt.lon / 10000000.0;
-                            fix_msg_.altitude = pvt.height / 1000.0; // Height above ellipsoid
-
-                            // Set status
-                            // ZED-F9P RTK status check (flags: 0x40 is RTK float, 0x80 is RTK fixed)
-                            bool is_rtk = (pvt.flags & 0xC0) != 0;
-                            if (pvt.fixType >= 2) {
-                                if (is_rtk) {
-                                    fix_msg_.status.status = sensor_msgs::msg::NavSatStatus::STATUS_GBAS_FIX;
-                                } else {
-                                    fix_msg_.status.status = sensor_msgs::msg::NavSatStatus::STATUS_FIX;
-                                }
-                            } else {
-                                fix_msg_.status.status = sensor_msgs::msg::NavSatStatus::STATUS_NO_FIX;
-                            }
-
-                            fix_msg_.status.service = sensor_msgs::msg::NavSatStatus::SERVICE_GPS;
-
-                            // Convert hAcc/vAcc to position covariance (diagonal)
-                            // hAcc and vAcc are in mm, convert to meters
-                            double h_var = std::pow(pvt.hAcc / 1000.0, 2);
-                            double v_var = std::pow(pvt.vAcc / 1000.0, 2);
-
-                            // Ensure variance is non-zero
-                            h_var = std::max(h_var, 0.0001);
-                            v_var = std::max(v_var, 0.0001);
-
-                            fix_msg_.position_covariance = {
-                                h_var, 0.0, 0.0,
-                                0.0, h_var, 0.0,
-                                0.0, 0.0, v_var
-                            };
-                            fix_msg_.position_covariance_type = sensor_msgs::msg::NavSatFix::COVARIANCE_TYPE_DIAGONAL_KNOWN;
-
-                            gps_pub_->publish(fix_msg_);
-                        }
-                    }
+                    gps_pub_->publish(fix_msg_);
                 }
-            } catch (const std::exception& e) {
-                RCLCPP_ERROR(this->get_logger(), "Error in GPS serial loop: %s", e.what());
-                serial_conn_.close_port();
-                std::this_thread::sleep_for(std::chrono::seconds(1));
             }
         }
     }
@@ -220,11 +208,11 @@ private:
     // ROS
     rclcpp::Publisher<sensor_msgs::msg::NavSatFix>::SharedPtr gps_pub_;
     sensor_msgs::msg::NavSatFix fix_msg_;
+    rclcpp::TimerBase::SharedPtr timer_;
 
-    // Threading
-    std::thread read_thread_;
-    std::atomic<bool> is_running_;
+    // Serial
     SerialPort serial_conn_;
+    std::vector<uint8_t> buf_;
 };
 
 int main(int argc, char** argv) {
