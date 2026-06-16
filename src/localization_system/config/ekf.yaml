@@ -28,7 +28,7 @@ ekf_filter_node:
                   false, false, true,   # we fuse Yaw orientation
                   false, false, false,  # vx, vy, vz
                   false, false, true,   # we fuse wz (yaw rate)
-                  true,  true,  false]  # we fuse ax, ay (linear acceleration)
+                  false, false, false]  # we fuse ax, ay (linear acceleration)
     imu0_queue_size: 10
     imu0_differential: false
     imu0_relative: false
