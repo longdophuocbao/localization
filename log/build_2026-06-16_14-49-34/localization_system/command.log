@@ -1,2 +1,0 @@
-Invoking command in '/home/tractor/ros2_ws/build/localization_system': CMAKE_PREFIX_PATH=/opt/ros/kilted /usr/bin/cmake --build /home/tractor/ros2_ws/build/localization_system -- -j4 -l4
-Invoked command in '/home/tractor/ros2_ws/build/localization_system' returned '2': CMAKE_PREFIX_PATH=/opt/ros/kilted /usr/bin/cmake --build /home/tractor/ros2_ws/build/localization_system -- -j4 -l4

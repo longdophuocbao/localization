@@ -1,6 +1,0 @@
-Invoking command in '/home/tractor/ros2_ws/build/localization_system': CMAKE_PREFIX_PATH=/opt/ros/kilted /usr/bin/cmake /home/tractor/ros2_ws/src/localization_system -DCMAKE_INSTALL_PREFIX=/home/tractor/ros2_ws/install/localization_system
-Invoked command in '/home/tractor/ros2_ws/build/localization_system' returned '0': CMAKE_PREFIX_PATH=/opt/ros/kilted /usr/bin/cmake /home/tractor/ros2_ws/src/localization_system -DCMAKE_INSTALL_PREFIX=/home/tractor/ros2_ws/install/localization_system
-Invoking command in '/home/tractor/ros2_ws/build/localization_system': CMAKE_PREFIX_PATH=/opt/ros/kilted /usr/bin/cmake --build /home/tractor/ros2_ws/build/localization_system -- -j4 -l4
-Invoked command in '/home/tractor/ros2_ws/build/localization_system' returned '0': CMAKE_PREFIX_PATH=/opt/ros/kilted /usr/bin/cmake --build /home/tractor/ros2_ws/build/localization_system -- -j4 -l4
-Invoking command in '/home/tractor/ros2_ws/build/localization_system': CMAKE_PREFIX_PATH=/opt/ros/kilted /usr/bin/cmake --install /home/tractor/ros2_ws/build/localization_system
-Invoked command in '/home/tractor/ros2_ws/build/localization_system' returned '0': CMAKE_PREFIX_PATH=/opt/ros/kilted /usr/bin/cmake --install /home/tractor/ros2_ws/build/localization_system
