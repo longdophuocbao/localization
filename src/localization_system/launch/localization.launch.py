@@ -16,8 +16,8 @@ def generate_launch_description():
     use_sim_gps_arg = DeclareLaunchArgument('use_sim_gps', default_value='false', description='Use simulated GPS instead of real gps_driver')
     mag_dec_arg = DeclareLaunchArgument('magnetic_declination', default_value='0.0', description='Magnetic declination in radians at your location')
     
-    # EKF Configuration file path
-    ekf_config_path = os.path.join(pkg_share, 'config', 'ekf.yaml')
+    # UKF Configuration file path
+    ukf_config_path = os.path.join(pkg_share, 'config', 'ukf.yaml')
     
     # Nodes
     imu_node = Node(
@@ -60,12 +60,12 @@ def generate_launch_description():
         output='screen'
     )
     
-    ekf_node = Node(
+    ukf_node = Node(
         package='robot_localization',
-        executable='ekf_node',
-        name='ekf_filter_node',
+        executable='ukf_node',
+        name='ukf_filter_node',
         output='screen',
-        parameters=[ekf_config_path],
+        parameters=[ukf_config_path],
         arguments=['--ros-args', '--log-level', 'rclcpp:=ERROR']
     )
     
@@ -118,7 +118,7 @@ def generate_launch_description():
         gps_node,
         sim_gps_node,
         gps_averager_node,
-        ekf_node,
+        ukf_node,
         navsat_transform_node,
         tf_base_to_imu,
         tf_base_to_gps
