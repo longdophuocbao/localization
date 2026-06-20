@@ -19,18 +19,21 @@ def generate_launch_description():
     # UKF Configuration file path
     ukf_config_path = os.path.join(pkg_share, 'config', 'ukf.yaml')
     
+    # Parameters config file path
+    params_config_path = os.path.join(pkg_share, 'config', 'localization_params.yaml')
+    
     # Nodes
     imu_node = Node(
         package='localization_system',
         executable='imu_driver',
         name='imu_driver',
         output='screen',
-        parameters=[{
-            'port': LaunchConfiguration('imu_port'),
-            'baud': 115200,
-            'frame_id': 'imu_link',
-            'yaw_offset_deg': 90.0 # Converts North-0 WT901 orientation to East-0 ENU ROS orientation
-        }]
+        parameters=[
+            params_config_path,
+            {
+                'port': LaunchConfiguration('imu_port')
+            }
+        ]
     )
     
     gps_node = Node(
@@ -39,13 +42,11 @@ def generate_launch_description():
         name='gps_driver',
         output='screen',
         condition=UnlessCondition(LaunchConfiguration('use_sim_gps')),
-        parameters=[{
-            'port': LaunchConfiguration('gps_port'),
-            'baud': 115200,
-            'frame_id': 'gps_link'
-        }],
-        remappings=[
-            ('/gps/fix', '/gps/fix_raw')
+        parameters=[
+            params_config_path,
+            {
+                'port': LaunchConfiguration('gps_port')
+            }
         ]
     )
     
@@ -53,11 +54,6 @@ def generate_launch_description():
         cmd=['python3', '/home/tractor/gps_publisher.py'],
         output='screen',
         condition=IfCondition(LaunchConfiguration('use_sim_gps'))
-    )
-    
-    gps_averager_node = ExecuteProcess(
-        cmd=['python3', '/home/tractor/gps_averager.py'],
-        output='screen'
     )
     
     ukf_node = Node(
@@ -117,7 +113,6 @@ def generate_launch_description():
         imu_node,
         gps_node,
         sim_gps_node,
-        gps_averager_node,
         ukf_node,
         navsat_transform_node,
         tf_base_to_imu,
