@@ -13,7 +13,7 @@ class ImuDriverNode : public rclcpp::Node {
 public:
     ImuDriverNode() : Node("imu_driver") {
         // Declare parameters
-        this->declare_parameter<std::string>("port", "/dev/ttyACM3");
+        this->declare_parameter<std::string>("port", "/dev/ttyAMA0");
         this->declare_parameter<int>("baud", 115200);
         this->declare_parameter<std::string>("frame_id", "imu_link");
         this->declare_parameter<double>("yaw_offset_deg", 90.0);
