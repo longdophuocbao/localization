@@ -1,0 +1,5 @@
+path_planner_node:
+  ros__parameters:
+    robot_width: 2.0
+    robot_turn_radius: 4.0
+    headland_width: 3.0
