@@ -11,8 +11,8 @@ def generate_launch_description():
     pkg_share = get_package_share_directory('localization_system')
     
     # Launch arguments
-    imu_port_arg = DeclareLaunchArgument('imu_port', default_value='/dev/ttyACM3', description='Serial port of the IMU')
-    gps_port_arg = DeclareLaunchArgument('gps_port', default_value='/dev/ttyACM4', description='Serial port of the GPS')
+    imu_port_arg = DeclareLaunchArgument('imu_port', default_value='/dev/ttyAMA0', description='Serial port of the IMU')
+    gps_port_arg = DeclareLaunchArgument('gps_port', default_value='/dev/serial/by-id/usb-u-blox_AG_-_www.u-blox.com_u-blox_GNSS_receiver-if00', description='Serial port of the GPS')
     use_sim_gps_arg = DeclareLaunchArgument('use_sim_gps', default_value='false', description='Use simulated GPS instead of real gps_driver')
     mag_dec_arg = DeclareLaunchArgument('magnetic_declination', default_value='0.0', description='Magnetic declination in radians at your location')
     
