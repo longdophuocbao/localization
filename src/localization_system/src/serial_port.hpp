@@ -40,23 +40,15 @@ public:
         cfsetispeed(&options, speed);
         cfsetospeed(&options, speed);
 
-        // 8N1
+        // Set raw mode (disable echoing, canonical processing, character translation, etc.)
+        cfmakeraw(&options);
+
+        // Configure 8N1, local line, enable receiver explicitly
         options.c_cflag &= ~PARENB;
         options.c_cflag &= ~CSTOPB;
         options.c_cflag &= ~CSIZE;
         options.c_cflag |= CS8;
-
-        // Local line, enable receiver
         options.c_cflag |= (CLOCAL | CREAD);
-
-        // Raw input (no echoing, no canonical processing)
-        options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
-        
-        // Raw output
-        options.c_oflag &= ~OPOST;
-
-        // Disable software flow control
-        options.c_iflag &= ~(IXON | IXOFF | IXANY);
 
         // Fully non-blocking read settings: return immediately with whatever is available
         options.c_cc[VMIN] = 0;

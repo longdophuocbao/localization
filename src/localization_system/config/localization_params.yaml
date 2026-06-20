@@ -10,3 +10,10 @@ gps_driver:
     port: "/dev/serial/by-id/usb-u-blox_AG_-_www.u-blox.com_u-blox_GNSS_receiver-if00"
     baud: 115200
     frame_id: "gps_link"
+    ntrip_server: "140.110.11.120"
+    ntrip_port: 2101
+    ntrip_mountpoint: "MOAPRS0"
+    ntrip_user: "nsysudmee001"
+    ntrip_password: "GgQc4hu7"
+    ntrip_ggainterval: 5
+

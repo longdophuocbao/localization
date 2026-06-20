@@ -1,0 +1,11 @@
+# CalibrateImu.srv
+
+float64 duration_seconds    # How long to collect samples (default: 5.0)
+
+---
+bool success
+string message
+float64[3] acc_mean         # Measured gravity/bias for linear acceleration (x, y, z)
+float64[3] acc_var          # Measured variance for linear acceleration (x, y, z)
+float64[3] gyro_mean        # Measured bias for angular velocity (x, y, z)
+float64[3] gyro_var         # Measured variance for angular velocity (x, y, z)
