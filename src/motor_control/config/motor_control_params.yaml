@@ -4,11 +4,14 @@ can_motor_node:
     motor_id: 1
     torque_limit: 1500
     poll_rate: 50.0
+    default_speed_limit_dps: 180
+    calibration_torque_threshold: 600
+    steering_ratio: 1.0
 
 pure_pursuit_node:
   ros__parameters:
     lookahead_gain: 0.5
     min_lookahead_dist: 1.5
     wheelbase: 2.0
-    max_steer_angle: 0.6
+    max_steer_angle: 1.164
     steering_ratio: 1.0

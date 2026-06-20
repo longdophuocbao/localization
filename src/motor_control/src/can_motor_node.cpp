@@ -2,7 +2,9 @@
 #include <std_msgs/msg/bool.hpp>
 #include <std_msgs/msg/float64.hpp>
 #include <std_msgs/msg/string.hpp>
+#include <std_srvs/srv/trigger.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
+#include <fstream>
 
 #include <sys/socket.h>
 #include <sys/ioctl.h>
@@ -29,11 +31,18 @@ public:
         this->declare_parameter<int>("motor_id", 1);
         this->declare_parameter<int>("torque_limit", 1500); // Default speed control torque limit
         this->declare_parameter<double>("poll_rate", 50.0); // Hz for polling status
+        this->declare_parameter<int>("default_speed_limit_dps", 180); // Default speed limit for position control
+        this->declare_parameter<int>("calibration_torque_threshold", 500); // IQ current limit to register limit
+        this->declare_parameter<double>("steering_ratio", 1.0); // Transmission ratio between motor and steering wheel
 
         this->get_parameter("can_device", can_device_);
         this->get_parameter("motor_id", motor_id_);
         this->get_parameter("torque_limit", torque_limit_);
         this->get_parameter("poll_rate", poll_rate_);
+        this->get_parameter("default_speed_limit_dps", default_speed_limit_dps_);
+        this->get_parameter("calibration_torque_threshold", calibration_torque_threshold_);
+        this->get_parameter("steering_ratio", steering_ratio_);
+        speed_limit_dps_ = default_speed_limit_dps_;
 
         motor_can_id_ = 0x140 + motor_id_;
 
@@ -50,10 +59,18 @@ public:
             "/motor/cmd_speed", 10, std::bind(&CanMotorNode::speed_callback, this, std::placeholders::_1));
         angle_sub_ = this->create_subscription<std_msgs::msg::Float64>(
             "/motor/cmd_angle", 10, std::bind(&CanMotorNode::angle_callback, this, std::placeholders::_1));
+        speed_limit_sub_ = this->create_subscription<std_msgs::msg::Float64>(
+            "/motor/cmd_speed_limit", 10, std::bind(&CanMotorNode::speed_limit_callback, this, std::placeholders::_1));
         torque_sub_ = this->create_subscription<std_msgs::msg::Float64>(
             "/motor/cmd_torque", 10, std::bind(&CanMotorNode::torque_callback, this, std::placeholders::_1));
         enable_sub_ = this->create_subscription<std_msgs::msg::Bool>(
             "/motor/enable", 10, std::bind(&CanMotorNode::enable_callback, this, std::placeholders::_1));
+
+        // Services
+        calibrate_srv_ = this->create_service<std_srvs::srv::Trigger>(
+            "/motor/calibrate",
+            std::bind(&CanMotorNode::calibrate_callback, this, std::placeholders::_1, std::placeholders::_2)
+        );
 
         // Publishers
         joint_state_pub_ = this->create_publisher<sensor_msgs::msg::JointState>("/motor/joint_states", 10);
@@ -188,10 +205,13 @@ private:
         frame.can_id = motor_can_id_;
         frame.can_dlc = 8;
         std::memset(frame.data, 0, 8);
-        frame.data[0] = 0xA3; // Multi-turn position closed-loop command 1
+        frame.data[0] = 0xA4; // Multi-turn position closed-loop command 2 (with speed limit)
         frame.data[1] = 0x00;
-        frame.data[2] = 0x00;
-        frame.data[3] = 0x00;
+        
+        // Speed limit (dps)
+        uint16_t limit = speed_limit_dps_;
+        frame.data[2] = limit & 0xFF;
+        frame.data[3] = (limit >> 8) & 0xFF;
 
         // Angle control value
         frame.data[4] = angle_val & 0xFF;
@@ -200,6 +220,14 @@ private:
         frame.data[7] = (angle_val >> 24) & 0xFF;
 
         transmit_frame(frame);
+    }
+
+    void speed_limit_callback(const std_msgs::msg::Float64::SharedPtr msg) {
+        // Convert rad/s to dps
+        double limit_dps = std::abs(msg->data) * 180.0 / M_PI;
+        speed_limit_dps_ = static_cast<uint16_t>(std::round(limit_dps));
+        if (speed_limit_dps_ == 0) speed_limit_dps_ = 1;
+        RCLCPP_INFO(this->get_logger(), "Updated motor speed limit to %d dps", speed_limit_dps_);
     }
 
     void torque_callback(const std_msgs::msg::Float64::SharedPtr msg) {
@@ -221,6 +249,282 @@ private:
         frame.data[5] = (iq_val >> 8) & 0xFF;
 
         transmit_frame(frame);
+    }
+
+    void calibrate_callback(
+        const std::shared_ptr<std_srvs::srv::Trigger::Request> request,
+        std::shared_ptr<std_srvs::srv::Trigger::Response> response) 
+    {
+        (void)request;
+        if (is_calibrating_) {
+            response->success = false;
+            response->message = "Calibration already in progress.";
+            return;
+        }
+
+        is_calibrating_ = true;
+        
+        // Start background calibration thread
+        std::thread(&CanMotorNode::calibration_loop, this).detach();
+
+        response->success = true;
+        response->message = "Calibration routine started in background. Motor will turn left, then right, then center.";
+    }
+
+    double unwrap_angle(double current, double reference) {
+        double diff = current - reference;
+        while (diff > M_PI) diff -= 2.0 * M_PI;
+        while (diff < -M_PI) diff += 2.0 * M_PI;
+        return reference + diff;
+    }
+
+    void send_speed_dps(double speed_dps) {
+        int32_t speed_val = static_cast<int32_t>(speed_dps * 100.0);
+        struct can_frame frame;
+        frame.can_id = motor_can_id_;
+        frame.can_dlc = 8;
+        std::memset(frame.data, 0, 8);
+        frame.data[0] = 0xA2; // Speed closed-loop control command
+        frame.data[1] = 0x00;
+        int16_t iq_limit = static_cast<int16_t>(torque_limit_);
+        frame.data[2] = iq_limit & 0xFF;
+        frame.data[3] = (iq_limit >> 8) & 0xFF;
+        frame.data[4] = speed_val & 0xFF;
+        frame.data[5] = (speed_val >> 8) & 0xFF;
+        frame.data[6] = (speed_val >> 16) & 0xFF;
+        frame.data[7] = (speed_val >> 24) & 0xFF;
+        transmit_frame(frame);
+    }
+
+    void send_poll_cmd() {
+        struct can_frame frame;
+        frame.can_id = motor_can_id_;
+        frame.can_dlc = 8;
+        std::memset(frame.data, 0, 8);
+        frame.data[0] = 0x9C; // Read status 2
+        transmit_frame(frame);
+    }
+
+    void send_position_command(double angle_rad, uint16_t speed_limit_dps) {
+        double angle_deg = angle_rad * 180.0 / M_PI;
+        int32_t angle_val = static_cast<int32_t>(angle_deg * 100.0);
+
+        struct can_frame frame;
+        frame.can_id = motor_can_id_;
+        frame.can_dlc = 8;
+        std::memset(frame.data, 0, 8);
+        frame.data[0] = 0xA4; // Position control with speed limit
+        frame.data[1] = 0x00;
+        frame.data[2] = speed_limit_dps & 0xFF;
+        frame.data[3] = (speed_limit_dps >> 8) & 0xFF;
+        frame.data[4] = angle_val & 0xFF;
+        frame.data[5] = (angle_val >> 8) & 0xFF;
+        frame.data[6] = (angle_val >> 16) & 0xFF;
+        frame.data[7] = (angle_val >> 24) & 0xFF;
+        transmit_frame(frame);
+    }
+
+    void calibration_loop() {
+        RCLCPP_INFO(this->get_logger(), "=== [Calibration] Starting steering calibration ===");
+        
+        // Ensure motor is enabled
+        send_enable_command(true);
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+        // Record start position
+        double start_pos = (encoder_val_ / 65536.0) * 2.0 * M_PI;
+        double left_limit = start_pos;
+        double right_limit = start_pos;
+
+        // Phase 1: Rotate LEFT (positive direction)
+        RCLCPP_INFO(this->get_logger(), "[Calibration] Phase 1: Rotating LEFT slowly to detect limit...");
+        bool left_success = false;
+        auto phase1_start = this->get_clock()->now();
+        
+        while (rclcpp::ok() && is_calibrating_) {
+            // Check timeout (15 seconds)
+            if ((this->get_clock()->now() - phase1_start).seconds() > 15.0) {
+                RCLCPP_ERROR(this->get_logger(), "[Calibration] Phase 1 TIMEOUT!");
+                break;
+            }
+
+            // Send speed 20 dps (positive)
+            send_speed_dps(20.0);
+            
+            // Poll state
+            send_poll_cmd();
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
+            double cur_pos = unwrap_angle((encoder_val_ / 65536.0) * 2.0 * M_PI, start_pos);
+            int16_t cur_torque = std::abs(iq_current_);
+
+            RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 500,
+                                 "[Calibration] LEFT - Angle: %.2f deg, Torque: %d",
+                                 cur_pos * 180.0 / M_PI, cur_torque);
+
+            if (cur_torque >= calibration_torque_threshold_) {
+                left_limit = cur_pos;
+                left_success = true;
+                send_speed_dps(0.0);
+                RCLCPP_INFO(this->get_logger(), "[Calibration] LEFT limit detected at %.2f deg (Torque: %d)",
+                            left_limit * 180.0 / M_PI, cur_torque);
+                break;
+            }
+        }
+
+        if (!left_success) {
+            RCLCPP_ERROR(this->get_logger(), "[Calibration] Calibration aborted: LEFT limit not found.");
+            send_speed_dps(0.0);
+            is_calibrating_ = false;
+            return;
+        }
+
+        // Wait for motor to settle
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        // Phase 2: Rotate RIGHT (negative direction)
+        RCLCPP_INFO(this->get_logger(), "[Calibration] Phase 2: Rotating RIGHT slowly to detect limit...");
+        bool right_success = false;
+        auto phase2_start = this->get_clock()->now();
+
+        while (rclcpp::ok() && is_calibrating_) {
+            // Check timeout (25 seconds - needs to travel from Left limit all the way to Right limit)
+            if ((this->get_clock()->now() - phase2_start).seconds() > 25.0) {
+                RCLCPP_ERROR(this->get_logger(), "[Calibration] Phase 2 TIMEOUT!");
+                break;
+            }
+
+            // Send speed -20 dps (negative)
+            send_speed_dps(-20.0);
+            
+            // Poll state
+            send_poll_cmd();
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
+            double cur_pos = unwrap_angle((encoder_val_ / 65536.0) * 2.0 * M_PI, start_pos);
+            int16_t cur_torque = std::abs(iq_current_);
+
+            RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 500,
+                                 "[Calibration] RIGHT - Angle: %.2f deg, Torque: %d",
+                                 cur_pos * 180.0 / M_PI, cur_torque);
+
+            if (cur_torque >= calibration_torque_threshold_) {
+                right_limit = cur_pos;
+                right_success = true;
+                send_speed_dps(0.0);
+                RCLCPP_INFO(this->get_logger(), "[Calibration] RIGHT limit detected at %.2f deg (Torque: %d)",
+                            right_limit * 180.0 / M_PI, cur_torque);
+                break;
+            }
+        }
+
+        if (!right_success) {
+            RCLCPP_ERROR(this->get_logger(), "[Calibration] Calibration aborted: RIGHT limit not found.");
+            send_speed_dps(0.0);
+            is_calibrating_ = false;
+            return;
+        }
+
+        // Wait to settle
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        // Phase 3: Calculate Center and return
+        double center_pos = (left_limit + right_limit) / 2.0;
+        RCLCPP_INFO(this->get_logger(), "[Calibration] Calibration success!");
+        RCLCPP_INFO(this->get_logger(), "[Calibration]   LEFT Limit:  %.2f deg", left_limit * 180.0 / M_PI);
+        RCLCPP_INFO(this->get_logger(), "[Calibration]   RIGHT Limit: %.2f deg", right_limit * 180.0 / M_PI);
+        RCLCPP_INFO(this->get_logger(), "[Calibration]   CENTER Pos:  %.2f deg (relative to start)", (center_pos - start_pos) * 180.0 / M_PI);
+        RCLCPP_INFO(this->get_logger(), "[Calibration] Moving to Center position...");
+
+        // Move to center smoothly using speed limit 30 dps
+        auto move_start = this->get_clock()->now();
+        while (rclcpp::ok() && is_calibrating_) {
+            if ((this->get_clock()->now() - move_start).seconds() > 10.0) {
+                RCLCPP_WARN(this->get_logger(), "[Calibration] Move to center timeout.");
+                break;
+            }
+
+            send_position_command(center_pos, 30);
+            send_poll_cmd();
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+            double cur_pos = unwrap_angle((encoder_val_ / 65536.0) * 2.0 * M_PI, start_pos);
+            double diff = std::abs(cur_pos - center_pos);
+            if (diff < (1.0 * M_PI / 180.0)) { // within 1 degree
+                RCLCPP_INFO(this->get_logger(), "[Calibration] Center position reached.");
+                break;
+            }
+        }
+
+        // Calculate max_steer_angle (wheel angle in radians)
+        double motor_limit_range = std::abs(left_limit - right_limit) / 2.0;
+        double max_steer = motor_limit_range / steering_ratio_;
+        
+        RCLCPP_INFO(this->get_logger(), "[Calibration] Calculated max_steer_angle: %.4f rad (%.2f deg)",
+                    max_steer, max_steer * 180.0 / M_PI);
+
+        // 1. Save to yaml file
+        save_max_steer_angle_to_file(max_steer);
+
+        // 2. Try to update running pure_pursuit_node parameter dynamically
+        try {
+            auto param_client = std::make_shared<rclcpp::AsyncParametersClient>(this, "pure_pursuit_node");
+            if (param_client->wait_for_service(std::chrono::seconds(1))) {
+                param_client->set_parameters({
+                    rclcpp::Parameter("max_steer_angle", max_steer)
+                });
+                RCLCPP_INFO(this->get_logger(), "[Calibration] Successfully set max_steer_angle on running pure_pursuit_node.");
+            } else {
+                RCLCPP_WARN(this->get_logger(), "[Calibration] pure_pursuit_node not active. Dynamic parameter update skipped.");
+            }
+        } catch (const std::exception& e) {
+            RCLCPP_ERROR(this->get_logger(), "[Calibration] Error setting parameter: %s", e.what());
+        }
+
+        is_calibrating_ = false;
+        RCLCPP_INFO(this->get_logger(), "=== [Calibration] Calibration routine finished successfully ===");
+    }
+
+    void save_max_steer_angle_to_file(double max_steer) {
+        std::string file_path = "/home/long2/localization/src/motor_control/config/motor_control_params.yaml";
+        std::ifstream file(file_path);
+        if (!file.is_open()) {
+            RCLCPP_ERROR(this->get_logger(), "Could not open parameter file for reading: %s", file_path.c_str());
+            return;
+        }
+
+        std::vector<std::string> lines;
+        std::string line;
+        bool updated = false;
+
+        while (std::getline(file, line)) {
+            if (line.find("max_steer_angle:") != std::string::npos) {
+                size_t colon_idx = line.find(":");
+                if (colon_idx != std::string::npos) {
+                    std::ostringstream ss;
+                    ss << line.substr(0, colon_idx + 1) << " " << max_steer;
+                    line = ss.str();
+                    updated = true;
+                }
+            }
+            lines.push_back(line);
+        }
+        file.close();
+
+        if (updated) {
+            std::ofstream out_file(file_path);
+            if (out_file.is_open()) {
+                for (const auto& l : lines) {
+                    out_file << l << "\n";
+                }
+                out_file.close();
+                RCLCPP_INFO(this->get_logger(), "Successfully saved new max_steer_angle (%.4f rad) to %s", max_steer, file_path.c_str());
+            } else {
+                RCLCPP_ERROR(this->get_logger(), "Could not open parameter file for writing: %s", file_path.c_str());
+            }
+        } else {
+            RCLCPP_WARN(this->get_logger(), "Could not find max_steer_angle parameter in %s", file_path.c_str());
+        }
     }
 
     void enable_callback(const std_msgs::msg::Bool::SharedPtr msg) {
@@ -262,8 +566,8 @@ private:
         joint_state.header.stamp = this->get_clock()->now();
         joint_state.name = {"ktech_motor_joint"};
         
-        // Convert single-turn raw encoder value to position in radians (assuming 14-bit encoder, range 0~16383)
-        double pos_rad = (encoder_val_ / 16384.0) * 2.0 * M_PI;
+        // Convert single-turn raw encoder value to position in radians (assuming 16-bit encoder, range 0~65535)
+        double pos_rad = (encoder_val_ / 65536.0) * 2.0 * M_PI;
         joint_state.position = {pos_rad};
 
         // Convert speed (dps) to velocity (rad/s)
@@ -355,11 +659,22 @@ private:
     // ROS
     rclcpp::Subscription<std_msgs::msg::Float64>::SharedPtr speed_sub_;
     rclcpp::Subscription<std_msgs::msg::Float64>::SharedPtr angle_sub_;
+    rclcpp::Subscription<std_msgs::msg::Float64>::SharedPtr speed_limit_sub_;
     rclcpp::Subscription<std_msgs::msg::Float64>::SharedPtr torque_sub_;
     rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr enable_sub_;
     rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr joint_state_pub_;
     rclcpp::Publisher<std_msgs::msg::String>::SharedPtr status_pub_;
+    rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr calibrate_srv_;
     rclcpp::TimerBase::SharedPtr timer_;
+
+    // Calibration settings
+    int calibration_torque_threshold_ = 500;
+    bool is_calibrating_ = false;
+    double steering_ratio_ = 1.0;
+
+    // Speed limit parameters
+    int default_speed_limit_dps_ = 180;
+    uint16_t speed_limit_dps_ = 180;
 
     // Motor State variables (updated from CAN frame reads)
     int8_t temperature_ = 0;

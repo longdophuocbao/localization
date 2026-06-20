@@ -12,12 +12,14 @@ find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
 
 # Add CAN motor node executable
 add_executable(can_motor_node src/can_motor_node.cpp)
 target_link_libraries(can_motor_node PUBLIC
   rclcpp::rclcpp
   ${sensor_msgs_TARGETS}
+  ${std_srvs_TARGETS}
 )
 
 
