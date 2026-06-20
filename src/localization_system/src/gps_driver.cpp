@@ -7,6 +7,7 @@
 #include <chrono>
 #include <algorithm>
 #include <cstring>
+#include <thread>
 #include "serial_port.hpp"
 
 #pragma pack(push, 1)
@@ -32,13 +33,29 @@ struct UbxNavPvt {
     uint32_t hAcc;       // Horizontal accuracy estimate (mm)
     uint32_t vAcc;       // Vertical accuracy estimate (mm)
 };
+
+struct UbxNavHpposllh {
+    uint8_t  version;       // Message version (0x00)
+    uint8_t  reserved1[3];  // Reserved
+    uint32_t iTOW;          // GPS time of week [ms]
+    int32_t  lon;           // Longitude [deg * 1e-7]
+    int32_t  lat;           // Latitude [deg * 1e-7]
+    int32_t  height;        // Height above ellipsoid [mm]
+    int32_t  hMSL;          // Height above mean sea level [mm]
+    int8_t   lonHp;         // Longitude high precision [deg * 1e-9, range -99..99]
+    int8_t   latHp;         // Latitude high precision [deg * 1e-9, range -99..99]
+    int8_t   heightHp;      // Height HP [0.1 mm, range -9..9]
+    int8_t   hMSLHp;        // Height MSL HP [0.1 mm, range -9..9]
+    uint32_t hAcc;          // Horizontal accuracy estimate [0.1 mm]
+    uint32_t vAcc;          // Vertical accuracy estimate [0.1 mm]
+};
 #pragma pack(pop)
 
 class GpsDriverNode : public rclcpp::Node {
 public:
     GpsDriverNode() : Node("gps_driver") {
         // Declare parameters
-        this->declare_parameter<std::string>("port", "/dev/ttyACM4");
+        this->declare_parameter<std::string>("port", "/dev/serial/by-id/usb-u-blox_AG_-_www.u-blox.com_u-blox_GNSS_receiver-if00");
         this->declare_parameter<int>("baud", 115200);
         this->declare_parameter<std::string>("frame_id", "gps_link");
 
@@ -67,12 +84,43 @@ public:
     }
 
 private:
+    void send_ubx_cfg_msg(uint8_t target_class, uint8_t target_id, uint8_t rate) {
+        std::vector<uint8_t> packet = {
+            0xb5, 0x62,       // Sync chars
+            0x06, 0x01,       // Class: CFG, ID: MSG
+            0x08, 0x00,       // Length: 8 bytes
+            target_class,
+            target_id,
+            rate, rate, rate, rate, rate, rate  // Rates on all 6 interfaces
+        };
+
+        // Compute Fletcher checksum
+        uint8_t ck_a = 0;
+        uint8_t ck_b = 0;
+        for (size_t i = 2; i < packet.size(); ++i) {
+            ck_a = (ck_a + packet[i]) & 0xFF;
+            ck_b = (ck_b + ck_a) & 0xFF;
+        }
+        packet.push_back(ck_a);
+        packet.push_back(ck_b);
+
+        if (serial_conn_.is_open()) {
+            serial_conn_.write_data(packet.data(), packet.size());
+            RCLCPP_INFO(this->get_logger(), "Sent UBX-CFG-MSG to set rate of class 0x%02X ID 0x%02X to %d", target_class, target_id, rate);
+        }
+    }
+
     void timer_callback() {
         // Attempt connection if not open
         if (!serial_conn_.is_open()) {
             if (serial_conn_.open_port(port_, baud_)) {
                 RCLCPP_INFO(this->get_logger(), "Successfully connected to GPS at %s", port_.c_str());
                 buf_.clear();
+
+                // Configure GPS receiver to output NAV-PVT and NAV-HPPOSLLH
+                send_ubx_cfg_msg(0x01, 0x07, 1); // Enable UBX-NAV-PVT
+                std::this_thread::sleep_for(std::chrono::milliseconds(50));
+                send_ubx_cfg_msg(0x01, 0x14, 1); // Enable UBX-NAV-HPPOSLLH
             } else {
                 RCLCPP_ERROR_THROTTLE(this->get_logger(), *this->get_clock(), 5000,
                                       "Failed to connect to GPS at %s, retrying...", port_.c_str());
@@ -94,8 +142,8 @@ private:
             return;
         }
 
-        // Process UBX packets
-        while (buf_.size() >= 100) {
+        // Process UBX packets (minimum header + checksum is 8 bytes)
+        while (buf_.size() >= 8) {
             // Find UBX sync char 0xb5 0x62
             size_t idx = std::string::npos;
             for (size_t i = 0; i + 1 < buf_.size(); ++i) {
@@ -122,6 +170,7 @@ private:
                 continue;
             }
 
+            // Header starts at buf_[0]
             if (buf_.size() < 6) {
                 break;
             }
@@ -156,34 +205,94 @@ private:
                     UbxNavPvt pvt;
                     std::memcpy(&pvt, &packet[6], sizeof(UbxNavPvt));
 
+                    last_pvt_fix_type_ = pvt.fixType;
+                    last_pvt_flags_ = pvt.flags;
+                    last_pvt_iTOW_ = pvt.iTOW;
+                    last_pvt_time_ = this->get_clock()->now();
+
+                    // Check if we have received a high precision fix recently.
+                    // If not, publish from standard PVT message as a fallback.
+                    auto now = this->get_clock()->now();
+                    double dt = (now - last_hpposllh_time_).seconds();
+                    if (dt > 2.0) {
+                        fix_msg_.header.stamp = now;
+
+                        // Set coordinates
+                        fix_msg_.latitude = pvt.lat / 10000000.0;
+                        fix_msg_.longitude = pvt.lon / 10000000.0;
+                        fix_msg_.altitude = pvt.height / 1000.0; // Height above ellipsoid
+
+                        // Set status
+                        bool is_rtk = (pvt.flags & 0xC0) != 0;
+                        if (pvt.fixType >= 2) {
+                            if (is_rtk) {
+                                fix_msg_.status.status = sensor_msgs::msg::NavSatStatus::STATUS_GBAS_FIX;
+                            } else {
+                                fix_msg_.status.status = sensor_msgs::msg::NavSatStatus::STATUS_FIX;
+                            }
+                        } else {
+                            fix_msg_.status.status = sensor_msgs::msg::NavSatStatus::STATUS_NO_FIX;
+                        }
+
+                        fix_msg_.status.service = sensor_msgs::msg::NavSatStatus::SERVICE_GPS;
+
+                        // Convert hAcc/vAcc to position covariance (diagonal)
+                        double h_var = std::pow(pvt.hAcc / 1000.0, 2);
+                        double v_var = std::pow(pvt.vAcc / 1000.0, 2);
+                        h_var = std::max(h_var, 0.0001);
+                        v_var = std::max(v_var, 0.0001);
+
+                        fix_msg_.position_covariance = {
+                            h_var, 0.0, 0.0,
+                            0.0, h_var, 0.0,
+                            0.0, 0.0, v_var
+                        };
+                        fix_msg_.position_covariance_type = sensor_msgs::msg::NavSatFix::COVARIANCE_TYPE_DIAGONAL_KNOWN;
+
+                        gps_pub_->publish(fix_msg_);
+                    }
+                }
+            } else if (cls == 0x01 && msg_id == 0x14) { // UBX-NAV-HPPOSLLH
+                if (payload_len >= 36) {
+                    UbxNavHpposllh hppos;
+                    std::memcpy(&hppos, &packet[6], sizeof(UbxNavHpposllh));
+
+                    last_hpposllh_time_ = this->get_clock()->now();
+
                     auto current_time = this->get_clock()->now();
                     fix_msg_.header.stamp = current_time;
 
-                    // Set coordinates
-                    fix_msg_.latitude = pvt.lat / 10000000.0;
-                    fix_msg_.longitude = pvt.lon / 10000000.0;
-                    fix_msg_.altitude = pvt.height / 1000.0; // Height above ellipsoid
+                    // Combine high-precision fields:
+                    // lat/lon (1e-7 deg) + latHp/lonHp (1e-9 deg)
+                    // height (mm) + heightHp (0.1 mm)
+                    fix_msg_.latitude = static_cast<double>(hppos.lat) * 1e-7 + static_cast<double>(hppos.latHp) * 1e-9;
+                    fix_msg_.longitude = static_cast<double>(hppos.lon) * 1e-7 + static_cast<double>(hppos.lonHp) * 1e-9;
+                    fix_msg_.altitude = (static_cast<double>(hppos.height) + static_cast<double>(hppos.heightHp) * 0.1) / 1000.0;
 
-                    // Set status
-                    // ZED-F9P RTK status check (flags: 0x40 is RTK float, 0x80 is RTK fixed)
-                    bool is_rtk = (pvt.flags & 0xC0) != 0;
-                    if (pvt.fixType >= 2) {
+                    // Retrieve status info from PVT cache if reasonably fresh (< 2s)
+                    double pvt_dt = (current_time - last_pvt_time_).seconds();
+                    bool is_rtk = false;
+                    uint8_t fix_type = 0;
+                    if (pvt_dt < 2.0) {
+                        is_rtk = (last_pvt_flags_ & 0xC0) != 0;
+                        fix_type = last_pvt_fix_type_;
+                    }
+
+                    if (fix_type >= 2) {
                         if (is_rtk) {
                             fix_msg_.status.status = sensor_msgs::msg::NavSatStatus::STATUS_GBAS_FIX;
                         } else {
                             fix_msg_.status.status = sensor_msgs::msg::NavSatStatus::STATUS_FIX;
                         }
                     } else {
-                        fix_msg_.status.status = sensor_msgs::msg::NavSatStatus::STATUS_NO_FIX;
+                        // Fallback: if we have HPPOSLLH packets we assume some kind of fix
+                        fix_msg_.status.status = sensor_msgs::msg::NavSatStatus::STATUS_FIX;
                     }
-
                     fix_msg_.status.service = sensor_msgs::msg::NavSatStatus::SERVICE_GPS;
 
-                    // Convert hAcc/vAcc to position covariance (diagonal)
-                    double h_var = std::pow(pvt.hAcc / 1000.0, 2);
-                    double v_var = std::pow(pvt.vAcc / 1000.0, 2);
-
-                    // Ensure variance is non-zero
+                    // Convert accuracies (hAcc and vAcc are in 0.1 mm in HPPOSLLH) to variance (meters^2)
+                    double h_var = std::pow(hppos.hAcc * 0.0001, 2);
+                    double v_var = std::pow(hppos.vAcc * 0.0001, 2);
                     h_var = std::max(h_var, 0.0001);
                     v_var = std::max(v_var, 0.0001);
 
@@ -213,6 +322,15 @@ private:
     // Serial
     SerialPort serial_conn_;
     std::vector<uint8_t> buf_;
+
+    // PVT cache
+    uint8_t last_pvt_fix_type_ = 0;
+    uint8_t last_pvt_flags_ = 0;
+    uint32_t last_pvt_iTOW_ = 0;
+    rclcpp::Time last_pvt_time_ = rclcpp::Time(0, 0, RCL_ROS_TIME);
+
+    // Fallback/fallback-timing check
+    rclcpp::Time last_hpposllh_time_ = rclcpp::Time(0, 0, RCL_ROS_TIME);
 };
 
 int main(int argc, char** argv) {
