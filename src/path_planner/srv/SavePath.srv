@@ -1,0 +1,8 @@
+# SavePath.srv
+
+string file_path
+bool only_vertices    # If true, save only the field boundary vertices. If false, save all path waypoints.
+
+---
+bool success
+string message

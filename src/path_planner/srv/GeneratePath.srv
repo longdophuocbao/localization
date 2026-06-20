@@ -1,0 +1,11 @@
+# GeneratePath.srv
+
+# Parameters to override (optional; set <= 0 to use defaults configured in node)
+float64 robot_width
+float64 robot_turn_radius
+float64 headland_width
+
+---
+bool success                     # True if the path was successfully generated
+string message                   # Status message (e.g. error details)
+nav_msgs/Path path               # The generated path

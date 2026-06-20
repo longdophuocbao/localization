@@ -1,0 +1,9 @@
+# LoadPath.srv
+
+string file_path
+bool as_vertices     # If true, load the coordinates as the field boundary vertices (then generate path). If false, load directly as the path.
+
+---
+bool success
+string message
+int32 point_count

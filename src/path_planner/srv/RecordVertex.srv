@@ -1,0 +1,15 @@
+# RecordVertex.srv
+
+# Actions
+uint8 ACTION_ADD_VERTEX = 0
+uint8 ACTION_CLEAR = 1
+uint8 ACTION_GET_STATUS = 2
+
+uint8 action                     # Action to perform (ACTION_ADD_VERTEX, ACTION_CLEAR, ACTION_GET_STATUS)
+bool use_current_pose            # If true, use the robot's current pose from TF (only for ACTION_ADD_VERTEX)
+geometry_msgs/Point custom_vertex # If use_current_pose is false, use this point (only for ACTION_ADD_VERTEX)
+
+---
+bool success                     # True if the action succeeded
+string message                   # Status message
+geometry_msgs/Point[] vertices   # List of all recorded vertices so far
